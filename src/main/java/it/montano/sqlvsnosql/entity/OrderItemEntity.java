@@ -14,15 +14,15 @@ import lombok.Setter;
 @AllArgsConstructor
 public class OrderItemEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.UUID)
+  private String id;
 
-    private String productId;
+  private String productId;
 
-    private Integer quantity;
+  private Integer quantity;
 
-    @ManyToOne
-    @JoinColumn(name = "order_id")
-    private OrderEntity order;
+  @ManyToOne
+  @JoinColumn(name = "order_id")
+  private OrderEntity order;
 }
