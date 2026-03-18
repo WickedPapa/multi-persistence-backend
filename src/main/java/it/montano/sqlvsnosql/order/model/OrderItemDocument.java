@@ -1,6 +1,6 @@
 package it.montano.sqlvsnosql.order.model;
 
-import java.util.UUID;
+import it.montano.sqlvsnosql.product.model.ProductDocument;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -11,7 +11,6 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class OrderItemDocument {
 
-  UUID productId;
+  ProductDocument productDocument;
   Integer quantity;
-  Double unitPrice;
 }

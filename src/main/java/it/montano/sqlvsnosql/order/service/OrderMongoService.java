@@ -5,6 +5,7 @@ import it.montano.sqlvsnosql.common.dto.OrderRequestDto;
 import it.montano.sqlvsnosql.common.mapper.OrderMapper;
 import it.montano.sqlvsnosql.dto.OrderRequest;
 import it.montano.sqlvsnosql.dto.OrderResponse;
+import it.montano.sqlvsnosql.dto.ProductResponse;
 import it.montano.sqlvsnosql.order.model.OrderDocument;
 import it.montano.sqlvsnosql.order.repository.OrderMongoRepository;
 import it.montano.sqlvsnosql.product.service.ProductService;
@@ -27,7 +28,7 @@ public class OrderMongoService implements OrderService {
   @Override
   public @NonNull OrderResponse createOrder(@NonNull OrderRequest request) {
     OrderRequestDto orderItemRequestDto = mapper.toDto(request);
-    enrichOrderItemsWithUnitPrice(orderItemRequestDto);
+    enrichOrderItems(orderItemRequestDto);
     OrderDocument saved = repo.save(mapper.toDocument(orderItemRequestDto));
     return mapper.toResponse(saved);
   }
@@ -52,12 +53,14 @@ public class OrderMongoService implements OrderService {
     return repo.findAll().stream().map(mapper::toResponse).toList();
   }
 
-  private void enrichOrderItemsWithUnitPrice(@NonNull OrderRequestDto orderRequestDto) {
+  private void enrichOrderItems(@NonNull OrderRequestDto orderRequestDto) {
     orderRequestDto.getItems().forEach(this::fillItemPrice);
   }
 
   private void fillItemPrice(@NonNull OrderItemRequestDto orderItemRequestDto) {
-    orderItemRequestDto.setUnitPrice(
-        productService.getProductPrice(orderItemRequestDto.getProductId()));
+    ProductResponse productResponse =
+        productService.getProductById(orderItemRequestDto.getProductId());
+    orderItemRequestDto.setUnitPrice(productResponse.getPrice());
+    orderItemRequestDto.setName(productResponse.getName());
   }
 }

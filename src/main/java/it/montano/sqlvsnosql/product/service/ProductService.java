@@ -21,7 +21,4 @@ public interface ProductService {
 
   @NonNull
   ProductResponse updateProduct(@NonNull UUID productId, ProductRequest productRequest);
-
-  @NonNull
-  Double getProductPrice(@NonNull UUID productId);
 }

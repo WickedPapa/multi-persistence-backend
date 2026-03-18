@@ -11,6 +11,7 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class OrderItemRequestDto {
   UUID productId;
+  String name;
   Integer quantity;
   Double unitPrice;
 }

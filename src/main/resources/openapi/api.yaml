@@ -563,6 +563,7 @@ components:
       type: object
       required:
         - productId
+        - name
         - quantity
         - unitPrice
       properties:
@@ -570,6 +571,9 @@ components:
           type: string
           format: uuid
           description: Product identifier
+        name:
+          type: string
+          description: Product name
         quantity:
           type: integer
           description: Quantity of the product

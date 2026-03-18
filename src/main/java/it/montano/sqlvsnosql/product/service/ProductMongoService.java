@@ -48,9 +48,4 @@ public class ProductMongoService implements ProductService {
     doc.setId(productId);
     return mapper.toResponse(repo.save(doc));
   }
-
-  @Override
-  public @NonNull Double getProductPrice(@NonNull UUID productId) {
-    return repo.findById(productId).map(ProductDocument::getPrice).orElseThrow();
-  }
 }

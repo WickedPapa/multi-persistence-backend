@@ -48,9 +48,4 @@ public class ProductPostgresService implements ProductService {
     entity.setId(productId);
     return mapper.toResponse(repo.save(entity));
   }
-
-  @Override
-  public @NonNull Double getProductPrice(@NonNull UUID productId) {
-    return repo.findById(productId).map(ProductEntity::getPrice).orElseThrow();
-  }
 }
