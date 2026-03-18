@@ -44,7 +44,9 @@ public class ProductPostgresService implements ProductService {
   @Override
   public @NonNull ProductResponse updateProduct(
       @NonNull UUID productId, ProductRequest productRequest) {
-    return null;
+    ProductEntity entity = mapper.toEntity(productRequest);
+    entity.setId(productId);
+    return mapper.toResponse(repo.save(entity));
   }
 
   @Override
