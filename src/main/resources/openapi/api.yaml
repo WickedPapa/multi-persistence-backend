@@ -8,13 +8,91 @@ info:
 servers:
   - url: http://localhost:8080
 
+tags:
+  - name: Users
+    description: User management APIs
+  - name: Products
+    description: Product management APIs
+  - name: Orders
+    description: Order management APIs
+  - name: Order Items
+    description: APIs for managing order items
+  - name: Stats
+    description: Aggregation and reporting APIs
+
 paths:
 
-  # -------- products --------
+  /users:
+    get:
+      tags: [Users]
+      summary: Get all users
+      description: Returns the list of all users.
+      operationId: getUsers
+      responses:
+        '200':
+          description: List of users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserResponse'
+
+    post:
+      tags: [Users]
+      summary: Create user
+      description: Creates a new user.
+      operationId: createUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+      responses:
+        '201':
+          description: User created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+
+  /users/{userId}:
+    get:
+      tags: [Users]
+      summary: Get user by id
+      description: Returns the details of a user by id.
+      operationId: getUserById
+      parameters:
+        - $ref: '#/components/parameters/UserId'
+      responses:
+        '200':
+          description: User details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '404':
+          description: User not found
+
+    delete:
+      tags: [Users]
+      summary: Delete user by id
+      description: Deletes a user by id.
+      operationId: deleteUser
+      parameters:
+        - $ref: '#/components/parameters/UserId'
+      responses:
+        '204':
+          description: User deleted
+        '404':
+          description: User not found
 
   /products:
     get:
+      tags: [Products]
       summary: Get all products
+      description: Returns the list of all products.
       operationId: getProducts
       responses:
         '200':
@@ -27,7 +105,9 @@ paths:
                   $ref: '#/components/schemas/ProductResponse'
 
     post:
+      tags: [Products]
       summary: Create product
+      description: Creates a new product.
       operationId: createProduct
       requestBody:
         required: true
@@ -43,11 +123,65 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProductResponse'
 
-  # -------- orders --------
+  /products/{productId}:
+    get:
+      tags: [Products]
+      summary: Get product by id
+      description: Returns the details of a product by id.
+      operationId: getProductById
+      parameters:
+        - $ref: '#/components/parameters/ProductId'
+      responses:
+        '200':
+          description: Product details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductResponse'
+        '404':
+          description: Product not found
+
+    put:
+      tags: [Products]
+      summary: Update product
+      description: Updates the name and price of an existing product.
+      operationId: updateProduct
+      parameters:
+        - $ref: '#/components/parameters/ProductId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductRequest'
+      responses:
+        '200':
+          description: Product updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductResponse'
+        '404':
+          description: Product not found
+
+    delete:
+      tags: [Products]
+      summary: Delete product by id
+      description: Deletes a product by id.
+      operationId: deleteProduct
+      parameters:
+        - $ref: '#/components/parameters/ProductId'
+      responses:
+        '204':
+          description: Product deleted
+        '404':
+          description: Product not found
 
   /orders:
     get:
-      summary: Get all orders
+      tags: [Orders]
+      summary: Get orders
+      description: Returns all orders, optionally filtered by minimum total or product id.
       operationId: getOrders
       responses:
         '200':
@@ -60,7 +194,9 @@ paths:
                   $ref: '#/components/schemas/OrderResponse'
 
     post:
+      tags: [Orders]
       summary: Create order
+      description: Creates a new order for a user.
       operationId: createOrder
       requestBody:
         required: true
@@ -77,26 +213,223 @@ paths:
                 $ref: '#/components/schemas/OrderResponse'
 
   /orders/{orderId}:
+    get:
+      tags: [Orders]
+      summary: Get order by id
+      description: Returns the details of an order by id.
+      operationId: getOrderById
+      parameters:
+        - $ref: '#/components/parameters/OrderId'
+      responses:
+        '200':
+          description: Order details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderResponse'
+        '404':
+          description: Order not found
+
     delete:
+      tags: [Orders]
       summary: Delete order by id
+      description: Deletes an order by id.
       operationId: deleteOrder
       parameters:
-        - name: orderId
-          in: path
-          required: true
-          description: ID of the order to delete
-          schema:
-            type: string
+        - $ref: '#/components/parameters/OrderId'
       responses:
         '204':
           description: Order deleted
         '404':
           description: Order not found
 
+  /orders/user/{userId}:
+    get:
+      tags: [Orders]
+      summary: Get orders by user id
+      description: Returns all orders created by the specified user.
+      operationId: getOrdersByUserId
+      parameters:
+        - $ref: '#/components/parameters/UserIdAsUserId'
+      responses:
+        '200':
+          description: List of orders for the user
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OrderResponse'
+        '404':
+          description: User not found
+
+#  /orders/{orderId}/items:
+#    post:
+#      tags: [Order Items]
+#      summary: Add item to order
+#      description: Adds a new item to an existing order.
+#      operationId: addOrderItem
+#      parameters:
+#        - $ref: '#/components/parameters/OrderId'
+#      requestBody:
+#        required: true
+#        content:
+#          application/json:
+#            schema:
+#              $ref: '#/components/schemas/OrderItemRequest'
+#      responses:
+#        '200':
+#          description: Order updated with new item
+#          content:
+#            application/json:
+#              schema:
+#                $ref: '#/components/schemas/OrderResponse'
+#        '404':
+#          description: Order or product not found
+#
+#  /orders/{orderId}/items/{itemId}:
+#    put:
+#      tags: [Order Items]
+#      summary: Update order item
+#      description: Updates an existing item in an order.
+#      operationId: updateOrderItem
+#      parameters:
+#        - $ref: '#/components/parameters/OrderId'
+#        - $ref: '#/components/parameters/ItemId'
+#      requestBody:
+#        required: true
+#        content:
+#          application/json:
+#            schema:
+#              $ref: '#/components/schemas/OrderItemUpdateRequest'
+#      responses:
+#        '200':
+#          description: Order item updated
+#          content:
+#            application/json:
+#              schema:
+#                $ref: '#/components/schemas/OrderResponse'
+#        '404':
+#          description: Order or item not found
+#
+#    delete:
+#      tags: [Order Items]
+#      summary: Delete order item
+#      description: Deletes an item from an order.
+#      operationId: deleteOrderItem
+#      parameters:
+#        - $ref: '#/components/parameters/OrderId'
+#        - $ref: '#/components/parameters/ItemId'
+#      responses:
+#        '204':
+#          description: Order item deleted
+#        '404':
+#          description: Order or item not found
+
+#  /orders/stats/total-spent-per-user:
+#    get:
+#      tags: [Stats]
+#      summary: Get total spent per user
+#      description: Returns the total amount spent by each user.
+#      operationId: getTotalSpentPerUser
+#      responses:
+#        '200':
+#          description: Total spent per user
+#          content:
+#            application/json:
+#              schema:
+#                type: array
+#                items:
+#                  $ref: '#/components/schemas/TotalSpentPerUserResponse'
+#
+#  /orders/stats/most-sold-products:
+#    get:
+#      tags: [Stats]
+#      summary: Get most sold products
+#      description: Returns products sorted by sold quantity.
+#      operationId: getMostSoldProducts
+#      responses:
+#        '200':
+#          description: Most sold products
+#          content:
+#            application/json:
+#              schema:
+#                type: array
+#                items:
+#                  $ref: '#/components/schemas/MostSoldProductResponse'
+
 components:
+  parameters:
+    UserId:
+      name: userId
+      in: path
+      required: true
+      description: User identifier
+      schema:
+        type: string
+        format: uuid
+
+    UserIdAsUserId:
+      name: userId
+      in: path
+      required: true
+      description: User identifier
+      schema:
+        type: string
+        format: uuid
+
+    ProductId:
+      name: productId
+      in: path
+      required: true
+      description: Product identifier
+      schema:
+        type: string
+        format: uuid
+
+    OrderId:
+      name: orderId
+      in: path
+      required: true
+      description: Order identifier
+      schema:
+        type: string
+        format: uuid
+
+    ItemId:
+      name: itemId
+      in: path
+      required: true
+      description: Order item identifier
+      schema:
+        type: string
+        format: uuid
+
   schemas:
 
-    # -------- REQUEST --------
+    UserRequest:
+      type: object
+      required:
+        - firstName
+        - lastName
+        - email
+      properties:
+        firstName:
+          type: string
+          description: User first name
+          minLength: 1
+          maxLength: 100
+        lastName:
+          type: string
+          description: User last name
+          minLength: 1
+          maxLength: 100
+        email:
+          type: string
+          format: email
+          description: User email
+          minLength: 5
+          maxLength: 255
 
     ProductRequest:
       type: object
@@ -106,9 +439,14 @@ components:
       properties:
         name:
           type: string
+          description: Product name
+          minLength: 1
+          maxLength: 150
         price:
           type: number
           format: double
+          description: Current product price
+          minimum: 0
 
     OrderRequest:
       type: object
@@ -118,8 +456,12 @@ components:
       properties:
         userId:
           type: string
+          format: uuid
+          description: User identifier
         items:
           type: array
+          description: List of items included in the order
+          minItems: 1
           items:
             $ref: '#/components/schemas/OrderItemRequest'
 
@@ -131,10 +473,45 @@ components:
       properties:
         productId:
           type: string
+          format: uuid
+          description: Product identifier
         quantity:
           type: integer
+          description: Quantity of the product
+          minimum: 1
 
-    # -------- RESPONSE --------
+    OrderItemUpdateRequest:
+      type: object
+      required:
+        - quantity
+      properties:
+        quantity:
+          type: integer
+          description: Updated quantity
+          minimum: 1
+
+    UserResponse:
+      type: object
+      required:
+        - id
+        - firstName
+        - lastName
+        - email
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: User identifier
+        firstName:
+          type: string
+          description: User first name
+        lastName:
+          type: string
+          description: User last name
+        email:
+          type: string
+          format: email
+          description: User email
 
     ProductResponse:
       type: object
@@ -145,11 +522,15 @@ components:
       properties:
         id:
           type: string
+          format: uuid
+          description: Product identifier
         name:
           type: string
+          description: Product name
         price:
           type: number
           format: double
+          description: Current product price
 
     OrderResponse:
       type: object
@@ -157,23 +538,79 @@ components:
         - id
         - userId
         - items
+        - total
       properties:
         id:
           type: string
+          format: uuid
+          description: Order identifier
         userId:
           type: string
+          format: uuid
+          description: User identifier
         items:
           type: array
+          description: List of order items
           items:
             $ref: '#/components/schemas/OrderItemResponse'
+        total:
+          type: number
+          format: double
+          description: Total order amount
+          minimum: 0
 
     OrderItemResponse:
       type: object
       required:
+        - itemId
         - productId
         - quantity
+        - unitPrice
+      properties:
+        itemId:
+          type: string
+          format: uuid
+          description: Order item identifier
+        productId:
+          type: string
+          format: uuid
+          description: Product identifier
+        quantity:
+          type: integer
+          description: Quantity of the product
+        unitPrice:
+          type: number
+          format: double
+          description: Product price snapshot at order time
+          minimum: 0
+
+    TotalSpentPerUserResponse:
+      type: object
+      required:
+        - userId
+        - totalSpent
+      properties:
+        userId:
+          type: string
+          format: uuid
+          description: User identifier
+        totalSpent:
+          type: number
+          format: double
+          description: Total amount spent by the user
+          minimum: 0
+
+    MostSoldProductResponse:
+      type: object
+      required:
+        - productId
+        - totalQuantity
       properties:
         productId:
           type: string
-        quantity:
+          format: uuid
+          description: Product identifier
+        totalQuantity:
           type: integer
+          description: Total sold quantity
+          minimum: 0

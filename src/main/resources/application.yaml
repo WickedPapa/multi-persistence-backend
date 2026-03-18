@@ -1,3 +1,20 @@
 app:
   datasource: MONGODB
   #datasource: POSTGRES
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/sql_vs_nosql_postgres_db
+    username: postgres
+    password: postgres
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/sql_vs_nosql_postgres_db
+      uuid-representation: standard
+      auto-index-creation: true
