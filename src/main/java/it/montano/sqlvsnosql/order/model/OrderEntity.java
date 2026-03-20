@@ -1,6 +1,8 @@
 package it.montano.sqlvsnosql.order.model;
 
 import jakarta.persistence.*;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import lombok.*;
@@ -22,7 +24,12 @@ public class OrderEntity {
   UUID userId;
 
   @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-  List<OrderItemEntity> items;
+  List<OrderItemEntity> items = new ArrayList<>();
 
   Double total;
+
+  public void addItem(OrderItemEntity item) {
+    items.add(item);
+    item.setOrder(this);
+  }
 }

@@ -10,8 +10,10 @@ import it.montano.sqlvsnosql.order.model.OrderItemEntity;
 import java.util.List;
 import java.util.UUID;
 import lombok.NonNull;
+import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
 @Mapper(imports = {UUID.class})
 public interface OrderMapper {
@@ -35,15 +37,20 @@ public interface OrderMapper {
   @Mapping(target = "total", expression = "java(calculateTotal(request.getItems()))")
   OrderEntity toEntity(OrderRequestDto request);
 
+  @AfterMapping
+  default void linkItems(@MappingTarget OrderEntity order) {
+    order.getItems().forEach(item -> item.setOrder(order));
+  }
+
   @Mapping(target = "id", ignore = true)
   @Mapping(target = "order", ignore = true)
   OrderItemEntity toEntity(OrderItemRequestDto request);
 
   OrderResponse toResponse(OrderDocument entity);
 
-  @Mapping(target = "productId", source = "productDocument.id")
-  @Mapping(target = "name", source = "productDocument.name")
-  @Mapping(target = "price", source = "productDocument.price")
+  @Mapping(target = "productId", source = "productEmbedded.id")
+  @Mapping(target = "name", source = "productEmbedded.name")
+  @Mapping(target = "price", source = "productEmbedded.price")
   OrderItemResponse toResponse(OrderItemDocument entity);
 
   @Mapping(target = "id", expression = "java(UUID.randomUUID())")
@@ -54,9 +61,9 @@ public interface OrderMapper {
   @Mapping(target = "total", expression = "java(calculateTotal(request.getItems()))")
   OrderDocument toDocument(OrderRequestDto request, UserResponse userResponse);
 
-  @Mapping(target = "productDocument.id", source = "productId")
-  @Mapping(target = "productDocument.name", source = "name")
-  @Mapping(target = "productDocument.price", source = "price")
+  @Mapping(target = "productEmbedded.id", source = "productId")
+  @Mapping(target = "productEmbedded.name", source = "name")
+  @Mapping(target = "productEmbedded.price", source = "price")
   OrderItemDocument toDocument(OrderItemRequestDto request);
 
   @Mapping(target = "userId", source = "id")

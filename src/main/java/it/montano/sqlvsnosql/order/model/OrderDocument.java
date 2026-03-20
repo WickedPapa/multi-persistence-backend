@@ -1,5 +1,6 @@
 package it.montano.sqlvsnosql.order.model;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import lombok.*;
@@ -17,6 +18,6 @@ public class OrderDocument {
 
   @Id UUID id;
   UserEmbedded user;
-  List<OrderItemDocument> items;
+  List<OrderItemDocument> items = new ArrayList<>();
   Double total;
 }

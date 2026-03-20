@@ -1,12 +1,12 @@
 app:
-  datasource: MONGODB
-  #datasource: POSTGRES
+  #datasource: MONGODB
+  datasource: POSTGRES
 
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/sql_vs_nosql_postgres_db
-    username: postgres
-    password: postgres
+    username: postgres-admin
+    password: postgres-psw
 
   jpa:
     hibernate:
@@ -15,6 +15,6 @@ spring:
 
   data:
     mongodb:
-      uri: mongodb://localhost:27017/sql_vs_nosql_postgres_db
+      uri: mongodb://mongo-admin:mongo-psw@localhost:27017/sql_vs_nosql_mongo_db?authSource=admin
       uuid-representation: standard
       auto-index-creation: true

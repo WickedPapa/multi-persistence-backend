@@ -33,7 +33,7 @@ public class OrderPostgresService implements OrderService {
     OrderRequestDto orderItemRequestDto = mapper.toDto(request);
     enrichOrderItems(orderItemRequestDto);
     OrderEntity saved = repo.save(mapper.toEntity(orderItemRequestDto));
-    return mapper.toResponse(saved);
+    return enrichOrderResponse(mapper.toResponse(saved));
   }
 
   @Override

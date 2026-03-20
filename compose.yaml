@@ -7,8 +7,8 @@ services:
     container_name: postgres-db
     restart: always
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres-admin
+      POSTGRES_PASSWORD: postgres-psw
       POSTGRES_DB: sql_vs_nosql_postgres_db
     ports:
       - "5432:5432"
@@ -20,8 +20,8 @@ services:
     container_name: pgadmin
     restart: always
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@admin.com
-      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_DEFAULT_EMAIL: pg@admin.com
+      PGADMIN_DEFAULT_PASSWORD: pg-psw
     ports:
       - "5050:80"
     depends_on:
@@ -33,6 +33,9 @@ services:
     restart: always
     ports:
       - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mongo-admin
+      MONGO_INITDB_ROOT_PASSWORD: mongo-psw
     volumes:
       - mongo_data:/data/db
 
@@ -44,6 +47,10 @@ services:
       - "8081:8081"
     environment:
       ME_CONFIG_MONGODB_SERVER: mongo
+      ME_CONFIG_MONGODB_ADMINUSERNAME: mongo-admin
+      ME_CONFIG_MONGODB_ADMINPASSWORD: mongo-psw
+      ME_CONFIG_BASICAUTH_USERNAME: admin-basic
+      ME_CONFIG_BASICAUTH_PASSWORD: psw-basic
     depends_on:
       - mongo
 

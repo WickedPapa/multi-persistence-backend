@@ -18,6 +18,8 @@ public class ProductEntity {
   @GeneratedValue(strategy = GenerationType.UUID)
   UUID id;
 
+  @Column(unique = true)
   String name;
+
   Double price;
 }
