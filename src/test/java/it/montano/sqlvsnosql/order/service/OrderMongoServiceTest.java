@@ -33,11 +33,11 @@ class OrderMongoServiceTest {
 
   @Test
   void shouldCreateOrder(
-          @Given OrderRequest request,
-          @Given ProductResponse product,
-          @Given UserResponse user,
-          @Given UUID productId,
-          @Given UUID userId) {
+      @Given OrderRequest request,
+      @Given ProductResponse product,
+      @Given UserResponse user,
+      @Given UUID productId,
+      @Given UUID userId) {
 
     request.setUserId(userId);
     request.setItems(List.of(new OrderItemRequest().productId(productId).quantity(1)));
@@ -49,18 +49,24 @@ class OrderMongoServiceTest {
     OrderResponse result = service.createOrder(request);
 
     assertThat(result)
-            .isNotNull()
-            .satisfies(r -> {
+        .isNotNull()
+        .satisfies(
+            r -> {
               assertThat(r.getUser().getUserId()).isEqualTo(userId);
               assertThat(r.getItems())
-                      .singleElement()
-                      .satisfies(item -> {
+                  .singleElement()
+                  .satisfies(
+                      item -> {
                         assertThat(item.getProductId()).isEqualTo(productId);
                         assertThat(item.getName()).isEqualTo(product.getName());
                         assertThat(item.getPrice()).isEqualTo(product.getPrice());
                         assertThat(item.getQuantity()).isEqualTo(1);
                       });
-              assertThat(r.getTotal()).isEqualTo(r.getItems().stream().mapToDouble(item -> item.getPrice() * item.getQuantity()).sum());
+              assertThat(r.getTotal())
+                  .isEqualTo(
+                      r.getItems().stream()
+                          .mapToDouble(item -> item.getPrice() * item.getQuantity())
+                          .sum());
             });
 
     verify(productService).getProductById(productId);
@@ -86,9 +92,7 @@ class OrderMongoServiceTest {
   }
 
   @Test
-  void shouldGetOrdersByUserId(
-          @Given UUID userId,
-          @Given OrderDocument document) {
+  void shouldGetOrdersByUserId(@Given UUID userId, @Given OrderDocument document) {
 
     when(repo.findByUserUserId(userId)).thenReturn(List.of(document));
 
@@ -119,10 +123,10 @@ class OrderMongoServiceTest {
     List<MostSoldProductResponse> result = service.getMostSoldProducts();
 
     assertThat(result)
-            .isNotNull()
-            .hasSameSizeAs(expected)
-            .usingRecursiveFieldByFieldElementComparator()
-            .containsExactlyElementsOf(expected);
+        .isNotNull()
+        .hasSameSizeAs(expected)
+        .usingRecursiveFieldByFieldElementComparator()
+        .containsExactlyElementsOf(expected);
 
     verify(repo).getMostSoldProduct();
   }
@@ -135,10 +139,10 @@ class OrderMongoServiceTest {
     List<TotalSpentPerUserResponse> result = service.getTotalSpentPerUser();
 
     assertThat(result)
-            .isNotNull()
-            .hasSameSizeAs(expected)
-            .usingRecursiveFieldByFieldElementComparator()
-            .containsExactlyElementsOf(expected);
+        .isNotNull()
+        .hasSameSizeAs(expected)
+        .usingRecursiveFieldByFieldElementComparator()
+        .containsExactlyElementsOf(expected);
 
     verify(repo).getTotalSpentPerUser();
   }

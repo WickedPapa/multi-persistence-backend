@@ -27,9 +27,9 @@ class ProductMongoServiceTest {
 
   @Test
   void shouldCreateProduct(
-          @Given ProductRequest request,
-          @Given ProductDocument document,
-          @Given ProductResponse response) {
+      @Given ProductRequest request,
+      @Given ProductDocument document,
+      @Given ProductResponse response) {
 
     when(mapper.toDocument(request)).thenReturn(document);
     when(repo.save(document)).thenReturn(document);
@@ -51,9 +51,7 @@ class ProductMongoServiceTest {
 
   @Test
   void shouldGetProductById(
-          @Given UUID productId,
-          @Given ProductDocument document,
-          @Given ProductResponse response) {
+      @Given UUID productId, @Given ProductDocument document, @Given ProductResponse response) {
 
     when(repo.findById(productId)).thenReturn(Optional.of(document));
     when(mapper.toResponse(document)).thenReturn(response);
@@ -64,9 +62,7 @@ class ProductMongoServiceTest {
   }
 
   @Test
-  void shouldGetProducts(
-          @Given List<ProductDocument> documents,
-          @Given ProductResponse response) {
+  void shouldGetProducts(@Given List<ProductDocument> documents, @Given ProductResponse response) {
 
     when(repo.findAll()).thenReturn(documents);
     when(mapper.toResponse(any(ProductDocument.class))).thenReturn(response);
@@ -78,10 +74,10 @@ class ProductMongoServiceTest {
 
   @Test
   void shouldUpdateProduct(
-          @Given UUID productId,
-          @Given ProductRequest request,
-          @Given ProductDocument document,
-          @Given ProductResponse response) {
+      @Given UUID productId,
+      @Given ProductRequest request,
+      @Given ProductDocument document,
+      @Given ProductResponse response) {
 
     when(repo.findById(productId)).thenReturn(Optional.of(document));
     doNothing().when(mapper).updateDocument(request, document);

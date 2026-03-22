@@ -27,9 +27,7 @@ class UserMongoServiceTest {
 
   @Test
   void shouldCreateUser(
-          @Given UserRequest request,
-          @Given UserDocument document,
-          @Given UserResponse response) {
+      @Given UserRequest request, @Given UserDocument document, @Given UserResponse response) {
 
     when(mapper.toDocument(request)).thenReturn(document);
     when(repo.save(document)).thenReturn(document);
@@ -51,9 +49,7 @@ class UserMongoServiceTest {
 
   @Test
   void shouldGetUserById(
-          @Given UUID userId,
-          @Given UserDocument document,
-          @Given UserResponse response) {
+      @Given UUID userId, @Given UserDocument document, @Given UserResponse response) {
 
     when(repo.findById(userId)).thenReturn(Optional.of(document));
     when(mapper.toResponse(document)).thenReturn(response);
@@ -64,9 +60,7 @@ class UserMongoServiceTest {
   }
 
   @Test
-  void shouldGetUsers(
-          @Given List<UserDocument> documents,
-          @Given UserResponse response) {
+  void shouldGetUsers(@Given List<UserDocument> documents, @Given UserResponse response) {
 
     when(repo.findAll()).thenReturn(documents);
     when(mapper.toResponse(any(UserDocument.class))).thenReturn(response);
