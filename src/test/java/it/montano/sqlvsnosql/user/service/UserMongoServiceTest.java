@@ -14,7 +14,6 @@ import java.util.Optional;
 import java.util.UUID;
 import org.instancio.junit.Given;
 import org.junit.jupiter.api.Test;
-import org.mapstruct.factory.Mappers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
@@ -23,22 +22,22 @@ class UserMongoServiceTest {
 
   @InjectMocks UserMongoService service;
 
+  @Mock UserMapper mapper;
   @Mock UserMongoRepository repo;
-
-  @Mock UserMapper mapper = Mappers.getMapper(UserMapper.class);
 
   @Test
   void shouldCreateUser(
-      @Given UserRequest request,
-      @Given UserDocument userDocument,
-      @Given UserResponse userResponse) {
-    when(mapper.toDocument(request)).thenReturn(userDocument);
-    when(repo.save(userDocument)).thenReturn(userDocument);
-    when(mapper.toResponse(userDocument)).thenReturn(userResponse);
+          @Given UserRequest request,
+          @Given UserDocument document,
+          @Given UserResponse response) {
+
+    when(mapper.toDocument(request)).thenReturn(document);
+    when(repo.save(document)).thenReturn(document);
+    when(mapper.toResponse(document)).thenReturn(response);
 
     UserResponse result = service.createUser(request);
 
-    assertThat(result).isNotNull().isEqualTo(userResponse);
+    assertThat(result).isNotNull().isEqualTo(response);
   }
 
   @Test
@@ -52,7 +51,10 @@ class UserMongoServiceTest {
 
   @Test
   void shouldGetUserById(
-      @Given UUID userId, @Given UserDocument document, @Given UserResponse response) {
+          @Given UUID userId,
+          @Given UserDocument document,
+          @Given UserResponse response) {
+
     when(repo.findById(userId)).thenReturn(Optional.of(document));
     when(mapper.toResponse(document)).thenReturn(response);
 
@@ -62,7 +64,10 @@ class UserMongoServiceTest {
   }
 
   @Test
-  void shouldGetUsers(@Given List<UserDocument> documents, @Given UserResponse response) {
+  void shouldGetUsers(
+          @Given List<UserDocument> documents,
+          @Given UserResponse response) {
+
     when(repo.findAll()).thenReturn(documents);
     when(mapper.toResponse(any(UserDocument.class))).thenReturn(response);
 
