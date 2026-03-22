@@ -14,10 +14,8 @@ import java.util.Optional;
 import java.util.UUID;
 import org.instancio.junit.Given;
 import org.junit.jupiter.api.Test;
-import org.mapstruct.factory.Mappers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
 
 @ConfiguredTest
 class ProductMongoServiceTest {
@@ -25,71 +23,73 @@ class ProductMongoServiceTest {
   @InjectMocks ProductMongoService service;
 
   @Mock ProductMongoRepository repo;
-
-  @Spy ProductMapper mapper = Mappers.getMapper(ProductMapper.class);
+  @Mock ProductMapper mapper;
 
   @Test
-  void shouldCreateProduct(@Given ProductRequest request) {
-    when(repo.save(any(ProductDocument.class)))
-        .thenAnswer(
-            invocation -> {
-              ProductDocument document = invocation.getArgument(0);
-              document.setId(UUID.randomUUID());
-              return document;
-            });
+  void shouldCreateProduct(
+          @Given ProductRequest request,
+          @Given ProductDocument document,
+          @Given ProductResponse response) {
 
-    ProductResponse response = service.createProduct(request);
+    when(mapper.toDocument(request)).thenReturn(document);
+    when(repo.save(document)).thenReturn(document);
+    when(mapper.toResponse(document)).thenReturn(response);
 
-    assertThat(response)
-        .isNotNull()
-        .extracting(ProductResponse::getName, ProductResponse::getPrice)
-        .containsExactly(request.getName(), request.getPrice());
+    ProductResponse result = service.createProduct(request);
+
+    assertThat(result).isNotNull().isEqualTo(response);
   }
 
   @Test
   void shouldDeleteProduct(@Given UUID productId) {
+    doNothing().when(repo).deleteById(productId);
+
     service.deleteProduct(productId);
 
     verify(repo).deleteById(productId);
   }
 
   @Test
-  void shouldGetProductById() {
-    UUID productId = UUID.randomUUID();
-    ProductDocument document = new ProductDocument(productId, "Desk", 300.0);
+  void shouldGetProductById(
+          @Given UUID productId,
+          @Given ProductDocument document,
+          @Given ProductResponse response) {
+
     when(repo.findById(productId)).thenReturn(Optional.of(document));
+    when(mapper.toResponse(document)).thenReturn(response);
 
-    ProductResponse response = service.getProductById(productId);
+    ProductResponse result = service.getProductById(productId);
 
-    assertThat(response)
-        .isNotNull()
-        .extracting(ProductResponse::getId, ProductResponse::getName)
-        .containsExactly(productId, "Desk");
+    assertThat(result).isNotNull().isEqualTo(response);
   }
 
   @Test
-  void shouldGetProducts() {
-    List<ProductDocument> documents =
-        List.of(
-            new ProductDocument(UUID.randomUUID(), "Chair", 120.0),
-            new ProductDocument(UUID.randomUUID(), "Lamp", 30.0));
+  void shouldGetProducts(
+          @Given List<ProductDocument> documents,
+          @Given ProductResponse response) {
+
     when(repo.findAll()).thenReturn(documents);
+    when(mapper.toResponse(any(ProductDocument.class))).thenReturn(response);
 
-    List<ProductResponse> responses = service.getProducts();
+    List<ProductResponse> result = service.getProducts();
 
-    assertThat(responses).hasSize(2).extracting(ProductResponse::getName).contains("Chair", "Lamp");
+    assertThat(result).isNotNull().contains(response);
   }
 
   @Test
-  void shouldUpdateProduct(@Given ProductRequest request) {
-    UUID productId = UUID.randomUUID();
-    when(repo.save(any(ProductDocument.class))).thenAnswer(invocation -> invocation.getArgument(0));
+  void shouldUpdateProduct(
+          @Given UUID productId,
+          @Given ProductRequest request,
+          @Given ProductDocument document,
+          @Given ProductResponse response) {
 
-    ProductResponse response = service.updateProduct(productId, request);
+    when(repo.findById(productId)).thenReturn(Optional.of(document));
+    doNothing().when(mapper).updateDocument(request, document);
+    when(repo.save(document)).thenReturn(document);
+    when(mapper.toResponse(document)).thenReturn(response);
 
-    assertThat(response)
-        .isNotNull()
-        .extracting(ProductResponse::getId, ProductResponse::getName)
-        .containsExactly(productId, request.getName());
+    ProductResponse result = service.updateProduct(productId, request);
+
+    assertThat(result).isNotNull().isEqualTo(response);
   }
 }

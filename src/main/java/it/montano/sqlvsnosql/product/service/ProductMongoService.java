@@ -44,8 +44,8 @@ public class ProductMongoService implements ProductService {
   @Override
   public @NonNull ProductResponse updateProduct(
       @NonNull UUID productId, ProductRequest productRequest) {
-    ProductDocument doc = mapper.toDocument(productRequest);
-    doc.setId(productId);
+    ProductDocument doc = repo.findById(productId).orElseThrow();
+    mapper.updateDocument(productRequest, doc);
     return mapper.toResponse(repo.save(doc));
   }
 }
