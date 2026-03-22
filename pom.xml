@@ -210,6 +210,43 @@
 				</executions>
 			</plugin>
 
+			<!-- Coverage -->
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.8.12</version>
+				<configuration>
+					<excludes>
+						<exclude>it/montano/sqlvsnosql/Application*</exclude>
+						<exclude>it/montano/sqlvsnosql/api/**</exclude>
+						<exclude>it/montano/sqlvsnosql/dto/**</exclude>
+						<exclude>it/montano/sqlvsnosql/common/dto/**</exclude>
+						<exclude>it/montano/sqlvsnosql/common/GlobalExceptionHandler*</exclude>
+						<exclude>it/montano/sqlvsnosql/order/model/**</exclude>
+						<exclude>it/montano/sqlvsnosql/product/model/**</exclude>
+						<exclude>it/montano/sqlvsnosql/user/model/**</exclude>
+						<exclude>it/montano/sqlvsnosql/order/repository/**</exclude>
+						<exclude>it/montano/sqlvsnosql/product/repository/**</exclude>
+						<exclude>it/montano/sqlvsnosql/user/repository/**</exclude>
+					</excludes>
+				</configuration>
+				<executions>
+					<execution>
+						<id>prepare-agent</id>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>report</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
 		</plugins>
 	</build>
 
