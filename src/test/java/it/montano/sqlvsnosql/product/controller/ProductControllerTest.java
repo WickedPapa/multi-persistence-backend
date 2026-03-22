@@ -3,6 +3,8 @@ package it.montano.sqlvsnosql.product.controller;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
+import it.montano.sqlvsnosql.api.ProductsApi;
+import it.montano.sqlvsnosql.common.util.UriUtil;
 import it.montano.sqlvsnosql.config.ConfiguredTest;
 import it.montano.sqlvsnosql.dto.ProductRequest;
 import it.montano.sqlvsnosql.dto.ProductResponse;
@@ -40,7 +42,9 @@ class ProductControllerTest {
         .satisfies(
             r ->
                 assertThat(r.getHeaders().getLocation())
-                    .hasToString("/products/" + response.getId()))
+                    .hasToString(
+                        UriUtil.buildUri(ProductsApi.PATH_GET_PRODUCT_BY_ID, response.getId())
+                            .toString()))
         .extracting(ResponseEntity::getBody)
         .isEqualTo(response);
   }
