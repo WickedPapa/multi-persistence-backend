@@ -79,7 +79,7 @@ services:
       mongo:
         condition: service_healthy
     volumes:
-      - ${HOME}/.m2:/root/.m2
+      - ${HOME:-${USERPROFILE}}/.m2:/root/.m2
     healthcheck:
       test: 'curl -f http://localhost:8080/actuator/health -H "Connection: close" || exit 1'
       interval: 5s
@@ -102,7 +102,7 @@ services:
           exit 1;
         fi;
         echo "API is healthy. Starting Newman tests...";
-        newman run collection.json --env-var baseUrl=http://api-server:8080
+        newman run newman_test_collection.json --env-var baseUrl=http://api-server:8080
       '
 
 volumes:

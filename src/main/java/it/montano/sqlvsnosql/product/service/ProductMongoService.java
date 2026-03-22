@@ -1,5 +1,6 @@
 package it.montano.sqlvsnosql.product.service;
 
+import it.montano.sqlvsnosql.common.exeption.ResourceNotFoundException;
 import it.montano.sqlvsnosql.common.mapper.ProductMapper;
 import it.montano.sqlvsnosql.dto.ProductRequest;
 import it.montano.sqlvsnosql.dto.ProductResponse;
@@ -33,7 +34,7 @@ public class ProductMongoService implements ProductService {
 
   @Override
   public @NonNull ProductResponse getProductById(@NonNull UUID productId) {
-    return repo.findById(productId).map(mapper::toResponse).orElseThrow();
+    return repo.findById(productId).map(mapper::toResponse).orElseThrow(() ->  new ResourceNotFoundException(productId.toString()));
   }
 
   @Override
@@ -44,7 +45,7 @@ public class ProductMongoService implements ProductService {
   @Override
   public @NonNull ProductResponse updateProduct(
       @NonNull UUID productId, ProductRequest productRequest) {
-    ProductDocument doc = repo.findById(productId).orElseThrow();
+    ProductDocument doc = repo.findById(productId).orElseThrow(() ->  new ResourceNotFoundException(productId.toString()));
     mapper.updateDocument(productRequest, doc);
     return mapper.toResponse(repo.save(doc));
   }

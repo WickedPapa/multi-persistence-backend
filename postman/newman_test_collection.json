@@ -454,6 +454,10 @@
                   "\r",
                   "pm.test(\"Status code is 2xx\", function () {\r",
                   "    pm.expect(pm.response.code).to.be.within(200, 299);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Status code is 2xx\", function () {\r",
+                  "    pm.expect(pm.response.code).to.be.within(200, 299);\r",
                   "});"
                 ],
                 "type": "text/javascript",
@@ -760,6 +764,10 @@
                 "exec": [
                   "const res = pm.response.json();\r",
                   "const initialSize = Number(pm.collectionVariables.get(\"productsInitialSize\"));\r",
+                  "\r",
+                  "pm.test(\"Status code is 2xx\", function () {\r",
+                  "    pm.expect(pm.response.code).to.be.within(200, 299);\r",
+                  "});\r",
                   "\r",
                   "pm.test(\"There are 3 new products\", function () {\r",
                   "    pm.expect(res).to.be.an(\"array\");\r",
@@ -1671,6 +1679,10 @@
                 "exec": [
                   "const res = pm.response.json();\r",
                   "const initialSize = Number(pm.collectionVariables.get(\"ordersInitialSize\"));\r",
+                  "\r",
+                  "pm.test(\"Status code is 2xx\", function () {\r",
+                  "    pm.expect(pm.response.code).to.be.within(200, 299);\r",
+                  "});\r",
                   "\r",
                   "pm.test(\"There are 2 new orders\", function () {\r",
                   "    pm.expect(res).to.be.an(\"array\");\r",

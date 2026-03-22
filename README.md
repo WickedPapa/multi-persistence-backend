@@ -40,7 +40,7 @@ APP_DATASOURCE=POSTGRES docker compose up -d --build
 ```
 #### Windows (PowerShell)
 ```bash
-$env:HOME=$env:USERPROFILE; $env:APP_DATASOURCE="POSTGRES"; docker compose up -d --build
+$env:APP_DATASOURCE="POSTGRES"; docker compose up -d --build
 ```
 
 ### MongoDB (NoSQL)
@@ -52,7 +52,7 @@ APP_DATASOURCE=MONGODB docker compose up -d --build
 
 #### Windows (PowerShell)
 ```bash
-$env:HOME=$env:USERPROFILE; $env:APP_DATASOURCE="MONGODB"; docker compose up -d --build
+$env:APP_DATASOURCE="MONGODB"; docker compose up -d --build
 ```
 
 ## 🧪 Run API tests (automatic)
@@ -79,6 +79,9 @@ The application must be already running and fully started before executing the t
 
 * OpenAPI YAML → http://localhost:8080/v3/api-docs.yaml
   → Downloadable API specification
+
+### ⚠️ Prerequisite
+The application must be up and running
 
 ---
 

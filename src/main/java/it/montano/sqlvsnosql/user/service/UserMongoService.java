@@ -1,5 +1,6 @@
 package it.montano.sqlvsnosql.user.service;
 
+import it.montano.sqlvsnosql.common.exeption.ResourceNotFoundException;
 import it.montano.sqlvsnosql.common.mapper.UserMapper;
 import it.montano.sqlvsnosql.dto.UserRequest;
 import it.montano.sqlvsnosql.dto.UserResponse;
@@ -33,7 +34,7 @@ public class UserMongoService implements UserService {
 
   @Override
   public @NonNull UserResponse getUserById(@NonNull UUID userId) {
-    return repo.findById(userId).map(mapper::toResponse).orElseThrow();
+    return repo.findById(userId).map(mapper::toResponse).orElseThrow(() ->  new ResourceNotFoundException(userId.toString()));
   }
 
   @Override

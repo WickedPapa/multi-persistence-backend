@@ -2,6 +2,7 @@ package it.montano.sqlvsnosql.order.service;
 
 import it.montano.sqlvsnosql.common.dto.OrderItemRequestDto;
 import it.montano.sqlvsnosql.common.dto.OrderRequestDto;
+import it.montano.sqlvsnosql.common.exeption.ResourceNotFoundException;
 import it.montano.sqlvsnosql.common.mapper.OrderMapper;
 import it.montano.sqlvsnosql.dto.*;
 import it.montano.sqlvsnosql.order.model.OrderEntity;
@@ -48,7 +49,7 @@ public class OrderPostgresService implements OrderService {
     return repo.findById(orderId)
         .map(mapper::toResponse)
         .map(this::enrichOrderResponse)
-        .orElseThrow();
+        .orElseThrow(() ->  new ResourceNotFoundException(orderId.toString()));
   }
 
   @Override
