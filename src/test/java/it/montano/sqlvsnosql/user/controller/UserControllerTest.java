@@ -3,6 +3,8 @@ package it.montano.sqlvsnosql.user.controller;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
+import it.montano.sqlvsnosql.api.UsersApi;
+import it.montano.sqlvsnosql.common.util.UriUtil;
 import it.montano.sqlvsnosql.config.ConfiguredTest;
 import it.montano.sqlvsnosql.dto.UserRequest;
 import it.montano.sqlvsnosql.dto.UserResponse;
@@ -37,6 +39,12 @@ class UserControllerTest {
     assertThat(result)
         .isNotNull()
         .satisfies(r -> assertThat(r.getStatusCode()).isEqualTo(HttpStatus.CREATED))
+        .satisfies(
+            r ->
+                assertThat(r.getHeaders().getLocation())
+                    .hasToString(
+                        UriUtil.buildUri(UsersApi.PATH_GET_USER_BY_ID, userResponse.getId())
+                            .toString()))
         .extracting(ResponseEntity::getBody)
         .isEqualTo(userResponse);
   }
