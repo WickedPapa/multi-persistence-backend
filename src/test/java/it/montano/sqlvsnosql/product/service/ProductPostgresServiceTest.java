@@ -30,9 +30,7 @@ class ProductPostgresServiceTest {
 
   @Test
   void shouldCreateProduct(
-          @Given ProductRequest request,
-          @Given ProductEntity entity,
-          @Given ProductResponse response) {
+      @Given ProductRequest request, @Given ProductEntity entity, @Given ProductResponse response) {
 
     when(mapper.toEntity(request)).thenReturn(entity);
     when(repo.save(entity)).thenReturn(entity);
@@ -54,9 +52,7 @@ class ProductPostgresServiceTest {
 
   @Test
   void shouldGetProductById(
-          @Given UUID productId,
-          @Given ProductEntity entity,
-          @Given ProductResponse response) {
+      @Given UUID productId, @Given ProductEntity entity, @Given ProductResponse response) {
 
     when(repo.findById(productId)).thenReturn(Optional.of(entity));
     when(mapper.toResponse(entity)).thenReturn(response);
@@ -67,9 +63,7 @@ class ProductPostgresServiceTest {
   }
 
   @Test
-  void shouldGetProducts(
-          @Given List<ProductEntity> entities,
-          @Given ProductResponse response) {
+  void shouldGetProducts(@Given List<ProductEntity> entities, @Given ProductResponse response) {
 
     when(repo.findAll()).thenReturn(entities);
     when(mapper.toResponse(any(ProductEntity.class))).thenReturn(response);
@@ -81,12 +75,13 @@ class ProductPostgresServiceTest {
 
   @Test
   void shouldUpdateProduct(
-          @Given UUID productId,
-          @Given ProductRequest request,
-          @Given ProductEntity entity,
-          @Given ProductResponse response) {
+      @Given UUID productId,
+      @Given ProductRequest request,
+      @Given ProductEntity entity,
+      @Given ProductResponse response) {
 
-    when(mapper.toEntity(request)).thenReturn(entity);
+    when(repo.findById(productId)).thenReturn(Optional.of(entity));
+    doNothing().when(mapper).updateEntity(request, entity);
     when(repo.save(entity)).thenReturn(entity);
     when(mapper.toResponse(entity)).thenReturn(response);
 
