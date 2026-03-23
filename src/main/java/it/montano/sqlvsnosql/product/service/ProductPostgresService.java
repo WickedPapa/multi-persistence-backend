@@ -24,6 +24,12 @@ public class ProductPostgresService implements ProductService {
   private final ProductPostgresRepository repo;
   private final ProductMapper mapper;
 
+  /**
+   * Creates a product entity in Postgres.
+   *
+   * @param request API product payload
+   * @return persisted product response
+   */
   @CacheEvict(value = "products", allEntries = true)
   @Override
   public @NonNull ProductResponse createProduct(@NonNull ProductRequest request) {
@@ -31,12 +37,23 @@ public class ProductPostgresService implements ProductService {
     return mapper.toResponse(repo.save(entity));
   }
 
+  /**
+   * Deletes a product by id and evicts its cache entry.
+   *
+   * @param productId identifier of the product
+   */
   @CacheEvict(value = "products", key = "#productId")
   @Override
   public void deleteProduct(@NonNull UUID productId) {
     repo.deleteById(productId);
   }
 
+  /**
+   * Retrieves a product by id leveraging caching.
+   *
+   * @param productId identifier of the product
+   * @return found product response
+   */
   @Cacheable(value = "products", key = "#productId")
   @Override
   public @NonNull ProductResponse getProductById(@NonNull UUID productId) {
@@ -45,11 +62,23 @@ public class ProductPostgresService implements ProductService {
         .orElseThrow(() -> new ResourceNotFoundException(productId.toString()));
   }
 
+  /**
+   * Lists every product stored in Postgres.
+   *
+   * @return list of product responses
+   */
   @Override
   public @NonNull List<ProductResponse> getProducts() {
     return repo.findAll().stream().map(mapper::toResponse).toList();
   }
 
+  /**
+   * Updates a product entity with the given payload.
+   *
+   * @param productId identifier of the product
+   * @param productRequest data to apply
+   * @return updated product response
+   */
   @CachePut(value = "products", key = "#productId")
   @Override
   public @NonNull ProductResponse updateProduct(

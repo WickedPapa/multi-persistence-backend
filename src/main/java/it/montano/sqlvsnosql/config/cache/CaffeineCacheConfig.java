@@ -10,6 +10,11 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class CaffeineCacheConfig {
 
+  /**
+   * Configures the shared cache manager with standard caches and eviction policies.
+   *
+   * @return configured {@link CacheManager}
+   */
   @Bean
   public CacheManager cacheManager() {
 

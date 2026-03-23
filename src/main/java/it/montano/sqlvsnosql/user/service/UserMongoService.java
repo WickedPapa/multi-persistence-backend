@@ -23,6 +23,12 @@ public class UserMongoService implements UserService {
   private final UserMongoRepository repo;
   private final UserMapper mapper;
 
+  /**
+   * Creates a user document in MongoDB.
+   *
+   * @param request API user payload
+   * @return persisted user response
+   */
   @CacheEvict(value = "users", allEntries = true)
   @Override
   public @NonNull UserResponse createUser(@NonNull UserRequest request) {
@@ -30,12 +36,23 @@ public class UserMongoService implements UserService {
     return mapper.toResponse(repo.save(doc));
   }
 
+  /**
+   * Deletes a user and evicts any cached entry.
+   *
+   * @param userId identifier of the user
+   */
   @CacheEvict(value = "users", key = "#userId")
   @Override
   public void deleteUser(@NonNull UUID userId) {
     repo.deleteById(userId);
   }
 
+  /**
+   * Retrieves a user by id leveraging cache.
+   *
+   * @param userId identifier of the user
+   * @return found user response
+   */
   @Cacheable(value = "users", key = "#userId")
   @Override
   public @NonNull UserResponse getUserById(@NonNull UUID userId) {
@@ -44,6 +61,11 @@ public class UserMongoService implements UserService {
         .orElseThrow(() -> new ResourceNotFoundException(userId.toString()));
   }
 
+  /**
+   * Lists every user stored in MongoDB.
+   *
+   * @return list of user responses
+   */
   @Override
   public @NonNull List<UserResponse> getUsers() {
     return repo.findAll().stream().map(mapper::toResponse).toList();

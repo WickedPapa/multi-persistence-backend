@@ -45,6 +45,13 @@ public class CacheLoggingAspect {
       new DefaultParameterNameDiscoverer();
   private final ExpressionParser parser = new SpelExpressionParser();
 
+  /**
+   * Logs cache hits and misses for {@link Cacheable} methods.
+   *
+   * @param joinPoint intercepted invocation
+   * @return original method result
+   * @throws Throwable propagated target exception
+   */
   @Around("@annotation(org.springframework.cache.annotation.Cacheable)")
   public Object logCacheable(ProceedingJoinPoint joinPoint) throws Throwable {
 
@@ -64,6 +71,13 @@ public class CacheLoggingAspect {
     return joinPoint.proceed();
   }
 
+  /**
+   * Logs cache put operations triggered by {@link CachePut}.
+   *
+   * @param joinPoint intercepted invocation
+   * @return original method result
+   * @throws Throwable propagated target exception
+   */
   @Around("@annotation(org.springframework.cache.annotation.CachePut)")
   public Object logCachePut(ProceedingJoinPoint joinPoint) throws Throwable {
 
@@ -86,6 +100,13 @@ public class CacheLoggingAspect {
     return result;
   }
 
+  /**
+   * Logs cache evictions triggered by {@link CacheEvict}.
+   *
+   * @param joinPoint intercepted invocation
+   * @return original method result
+   * @throws Throwable propagated target exception
+   */
   @Around("@annotation(org.springframework.cache.annotation.CacheEvict)")
   public Object logCacheEvict(ProceedingJoinPoint joinPoint) throws Throwable {
 

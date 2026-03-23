@@ -29,6 +29,12 @@ public class OrderPostgresService implements OrderService {
   private final OrderPostgresRepository repo;
   private final OrderMapper mapper;
 
+  /**
+   * Persists a new order in Postgres after enriching items.
+   *
+   * @param request API order payload
+   * @return persisted order response with hydrated user data
+   */
   @CacheEvict(value = "orders-by-user", key = "#request.userId")
   @Override
   public @NonNull OrderResponse createOrder(@NonNull OrderRequest request) {
@@ -38,6 +44,11 @@ public class OrderPostgresService implements OrderService {
     return enrichOrderResponse(mapper.toResponse(saved));
   }
 
+  /**
+   * Deletes an order and invalidates caches.
+   *
+   * @param orderId identifier of the order to delete
+   */
   @Caching(
       evict = {
         @CacheEvict(value = "orders-by-user", allEntries = true),
@@ -48,11 +59,22 @@ public class OrderPostgresService implements OrderService {
     repo.deleteById(orderId);
   }
 
+  /**
+   * Provides aggregate stats for the most sold products in Postgres.
+   *
+   * @return ordered list by quantity sold
+   */
   @Override
   public @NonNull List<MostSoldProductResponse> getMostSoldProducts() {
     return repo.getMostSoldProduct();
   }
 
+  /**
+   * Retrieves an order by id and hydrates its user details.
+   *
+   * @param orderId identifier of the order
+   * @return found order response
+   */
   @Cacheable(value = "orders", key = "#orderId")
   @Override
   public @NonNull OrderResponse getOrderById(@NonNull UUID orderId) {
@@ -62,6 +84,12 @@ public class OrderPostgresService implements OrderService {
         .orElseThrow(() -> new ResourceNotFoundException(orderId.toString()));
   }
 
+  /**
+   * Lists orders for a user while caching the result set.
+   *
+   * @param userId identifier of the user
+   * @return hydrated order responses
+   */
   @Cacheable(value = "orders-by-user", key = "#userId")
   @Override
   public @NonNull List<OrderResponse> getOrdersByUserId(@NonNull UUID userId) {
@@ -71,11 +99,21 @@ public class OrderPostgresService implements OrderService {
         .toList();
   }
 
+  /**
+   * Lists all orders stored in Postgres.
+   *
+   * @return hydrated order responses
+   */
   @Override
   public @NonNull List<OrderResponse> getOrders() {
     return repo.findAll().stream().map(mapper::toResponse).map(this::enrichOrderResponse).toList();
   }
 
+  /**
+   * Summarizes total spent per user using database aggregation.
+   *
+   * @return spending summary
+   */
   @Override
   public @NonNull List<TotalSpentPerUserResponse> getTotalSpentPerUser() {
     return repo.getTotalSpentPerUser();

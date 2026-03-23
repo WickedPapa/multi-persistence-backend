@@ -11,6 +11,11 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 public interface OrderMongoRepository extends MongoRepository<OrderDocument, UUID> {
   List<OrderDocument> findByUserUserId(UUID userId);
 
+  /**
+   * Aggregates spending totals grouped by user.
+   *
+   * @return summary with cumulative spent amounts
+   */
   @Aggregation(
       pipeline = {
         "{ $group: { "
@@ -31,6 +36,11 @@ public interface OrderMongoRepository extends MongoRepository<OrderDocument, UUI
       })
   List<TotalSpentPerUserResponse> getTotalSpentPerUser();
 
+  /**
+   * Aggregates the most sold product with total quantity.
+   *
+   * @return ordered list of products by quantity sold
+   */
   @Aggregation(
       pipeline = {
         "{ $unwind: '$items' }",

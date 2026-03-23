@@ -22,6 +22,13 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 @Component
 public class RequestResponseLoggingAspect {
 
+  /**
+   * Wraps REST controllers to log inbound requests and outbound responses.
+   *
+   * @param joinPoint intercepted controller invocation
+   * @return controller result
+   * @throws Throwable rethrows underlying exception
+   */
   @Around("within(@org.springframework.web.bind.annotation.RestController *)")
   public Object logAroundController(ProceedingJoinPoint joinPoint) throws Throwable {
     ServletRequestAttributes attributes = currentRequest();

@@ -11,6 +11,11 @@ import org.springframework.data.jpa.repository.Query;
 public interface OrderPostgresRepository extends JpaRepository<OrderEntity, UUID> {
   List<OrderEntity> findByUserId(UUID userId);
 
+  /**
+   * Aggregates spending totals grouped by user via JPQL.
+   *
+   * @return list containing the total spent per user
+   */
   @Query(
       """
     SELECT new it.montano.sqlvsnosql.dto.TotalSpentPerUserResponse(
@@ -26,6 +31,11 @@ public interface OrderPostgresRepository extends JpaRepository<OrderEntity, UUID
   """)
   List<TotalSpentPerUserResponse> getTotalSpentPerUser();
 
+  /**
+   * Returns products ordered by the quantity sold.
+   *
+   * @return products with cumulative quantities
+   */
   @Query(
       """
     SELECT new it.montano.sqlvsnosql.dto.MostSoldProductResponse(
