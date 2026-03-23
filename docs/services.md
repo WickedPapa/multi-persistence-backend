@@ -38,3 +38,38 @@ Web interface to explore relational data (tables, queries).
 - Password → `psw-basic`
 
 Web interface to explore MongoDB documents and collections.
+
+---
+
+## 📊 Monitoring & Cache Metrics
+
+Spring Boot Actuator exposes runtime metrics, including cache statistics.
+
+### Available endpoints
+
+- 👉 [All metrics](http://localhost:8080/actuator/metrics) → List of all available metrics
+- 👉 [Cache gets](http://localhost:8080/actuator/metrics/cache.gets) → Total cache accesses (hit + miss)
+- 👉 [Cache puts](http://localhost:8080/actuator/metrics/cache.puts) → Number of cache insertions
+- 👉 [Cache evictions](http://localhost:8080/actuator/metrics/cache.evictions) → Automatic cache removals (TTL / size)
+
+---
+
+### 🔍 Filter by cache
+
+You can filter metrics by cache name using query parameters:
+
+- 👉 [Users cache](http://localhost:8080/actuator/metrics/cache.gets?tag=cache:users)  
+- 👉 [Products cache](http://localhost:8080/actuator/metrics/cache.gets?tag=cache:products)  
+- 👉 [Orders cache](http://localhost:8080/actuator/metrics/cache.gets?tag=cache:orders)  
+- 👉 [Orders by user cache](http://localhost:8080/actuator/metrics/cache.gets?tag=cache:orders-by-user)
+
+---
+
+### 📈 Hit vs Miss analysis
+
+- 👉 [Cache hits](http://localhost:8080/actuator/metrics/cache.gets?tag=cache:users&tag=result:hit)  
+- 👉 [Cache misses](http://localhost:8080/actuator/metrics/cache.gets?tag=cache:users&tag=result:miss)  
+
+These metrics can be used to evaluate cache efficiency.
+
+---

@@ -11,6 +11,9 @@ import java.util.UUID;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -21,17 +24,20 @@ public class ProductPostgresService implements ProductService {
   private final ProductPostgresRepository repo;
   private final ProductMapper mapper;
 
+  @CacheEvict(value = "products", allEntries = true)
   @Override
   public @NonNull ProductResponse createProduct(@NonNull ProductRequest request) {
     ProductEntity entity = mapper.toEntity(request);
     return mapper.toResponse(repo.save(entity));
   }
 
+  @CacheEvict(value = "products", key = "#productId")
   @Override
   public void deleteProduct(@NonNull UUID productId) {
     repo.deleteById(productId);
   }
 
+  @Cacheable(value = "products", key = "#productId")
   @Override
   public @NonNull ProductResponse getProductById(@NonNull UUID productId) {
     return repo.findById(productId)
@@ -44,6 +50,7 @@ public class ProductPostgresService implements ProductService {
     return repo.findAll().stream().map(mapper::toResponse).toList();
   }
 
+  @CachePut(value = "products", key = "#productId")
   @Override
   public @NonNull ProductResponse updateProduct(
       @NonNull UUID productId, ProductRequest productRequest) {

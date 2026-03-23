@@ -22,7 +22,7 @@ APP_DATASOURCE=POSTGRES docker compose up -d --build
 ```
 #### ![Windows PowerShell](https://img.shields.io/badge/Windows-PowerShell-0078D6?logo=powershell&logoColor=white)
 ```bash
-$env:APP_DATASOURCE="POSTGRES"; docker compose up -d --build
+$env:HOME=$env:USERPROFILE; $env:APP_DATASOURCE="POSTGRES"; docker compose up -d --build
 ```
 
 ### 🍃 MongoDB (NoSQL)
@@ -34,7 +34,7 @@ APP_DATASOURCE=MONGODB docker compose up -d --build
 
 #### ![Windows PowerShell](https://img.shields.io/badge/Windows-PowerShell-0078D6?logo=powershell&logoColor=white)
 ```bash
-$env:APP_DATASOURCE="MONGODB"; docker compose up -d --build
+$env:HOME=$env:USERPROFILE; $env:APP_DATASOURCE="MONGODB"; docker compose up -d --build
 ```
 
 ---

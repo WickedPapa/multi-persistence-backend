@@ -79,7 +79,7 @@ services:
       mongo:
         condition: service_healthy
     volumes:
-      - ${HOME:-${USERPROFILE}}/.m2:/root/.m2
+      - ${HOME}/.m2:/root/.m2
     healthcheck:
       test: 'curl -f http://localhost:8080/actuator/health -H "Connection: close" || exit 1'
       interval: 5s

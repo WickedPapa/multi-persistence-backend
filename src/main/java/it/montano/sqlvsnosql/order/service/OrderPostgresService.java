@@ -14,6 +14,9 @@ import java.util.UUID;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -26,6 +29,7 @@ public class OrderPostgresService implements OrderService {
   private final OrderPostgresRepository repo;
   private final OrderMapper mapper;
 
+  @CacheEvict(value = "orders-by-user", key = "#request.userId")
   @Override
   public @NonNull OrderResponse createOrder(@NonNull OrderRequest request) {
     OrderRequestDto orderItemRequestDto = mapper.toDto(request);
@@ -34,6 +38,10 @@ public class OrderPostgresService implements OrderService {
     return enrichOrderResponse(mapper.toResponse(saved));
   }
 
+  @Caching(evict = {
+          @CacheEvict(value = "orders-by-user", allEntries = true),
+          @CacheEvict(value = "orders", key = "#orderId")
+  })
   @Override
   public void deleteOrder(@NonNull UUID orderId) {
     repo.deleteById(orderId);
@@ -44,6 +52,7 @@ public class OrderPostgresService implements OrderService {
     return repo.getMostSoldProduct();
   }
 
+  @Cacheable(value = "orders", key = "#orderId")
   @Override
   public @NonNull OrderResponse getOrderById(@NonNull UUID orderId) {
     return repo.findById(orderId)
@@ -52,6 +61,7 @@ public class OrderPostgresService implements OrderService {
         .orElseThrow(() -> new ResourceNotFoundException(orderId.toString()));
   }
 
+  @Cacheable(value = "orders-by-user", key = "#userId")
   @Override
   public @NonNull List<OrderResponse> getOrdersByUserId(@NonNull UUID userId) {
     return repo.findByUserId(userId).stream()

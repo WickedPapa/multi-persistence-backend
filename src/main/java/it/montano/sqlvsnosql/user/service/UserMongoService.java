@@ -11,6 +11,8 @@ import java.util.UUID;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -21,17 +23,20 @@ public class UserMongoService implements UserService {
   private final UserMongoRepository repo;
   private final UserMapper mapper;
 
+  @CacheEvict(value = "users", allEntries = true)
   @Override
   public @NonNull UserResponse createUser(@NonNull UserRequest request) {
     UserDocument doc = mapper.toDocument(request);
     return mapper.toResponse(repo.save(doc));
   }
 
+  @CacheEvict(value = "users", key = "#userId")
   @Override
   public void deleteUser(@NonNull UUID userId) {
     repo.deleteById(userId);
   }
 
+  @Cacheable(value = "users", key = "#userId")
   @Override
   public @NonNull UserResponse getUserById(@NonNull UUID userId) {
     return repo.findById(userId)
