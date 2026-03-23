@@ -1,10 +1,12 @@
 package it.montano.sqlvsnosql.order.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 import it.montano.sqlvsnosql.common.mapper.OrderMapper;
 import it.montano.sqlvsnosql.config.ConfiguredTest;
+import it.montano.sqlvsnosql.config.exeption.ResourceNotFoundException;
 import it.montano.sqlvsnosql.dto.*;
 import it.montano.sqlvsnosql.order.model.OrderDocument;
 import it.montano.sqlvsnosql.order.repository.OrderMongoRepository;
@@ -89,6 +91,11 @@ class OrderMongoServiceTest {
     assertThat(result).isNotNull();
 
     verify(repo).findById(orderId);
+  }
+
+  @Test
+  void getOrderByIdShouldThrow(@Given UUID orderId) {
+    assertThrows(ResourceNotFoundException.class, () -> service.getOrderById(orderId));
   }
 
   @Test

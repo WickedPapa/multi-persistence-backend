@@ -2,10 +2,12 @@ package it.montano.sqlvsnosql.order.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.field;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 import it.montano.sqlvsnosql.common.mapper.OrderMapper;
 import it.montano.sqlvsnosql.config.ConfiguredTest;
+import it.montano.sqlvsnosql.config.exeption.ResourceNotFoundException;
 import it.montano.sqlvsnosql.dto.*;
 import it.montano.sqlvsnosql.order.model.OrderEntity;
 import it.montano.sqlvsnosql.order.model.OrderItemEntity;
@@ -121,6 +123,11 @@ class OrderPostgresServiceTest {
 
     verify(repo).findById(orderId);
     verify(userService).getUserById(any());
+  }
+
+  @Test
+  void getOrderByIdShouldThrow(@Given UUID orderId) {
+    assertThrows(ResourceNotFoundException.class, () -> service.getOrderById(orderId));
   }
 
   @Test

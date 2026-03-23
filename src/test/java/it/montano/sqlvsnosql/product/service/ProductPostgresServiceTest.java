@@ -1,10 +1,12 @@
 package it.montano.sqlvsnosql.product.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 import it.montano.sqlvsnosql.common.mapper.ProductMapper;
 import it.montano.sqlvsnosql.config.ConfiguredTest;
+import it.montano.sqlvsnosql.config.exeption.ResourceNotFoundException;
 import it.montano.sqlvsnosql.dto.ProductRequest;
 import it.montano.sqlvsnosql.dto.ProductResponse;
 import it.montano.sqlvsnosql.product.model.ProductEntity;
@@ -63,6 +65,11 @@ class ProductPostgresServiceTest {
   }
 
   @Test
+  void getProductByIdShouldThrow(@Given UUID productId) {
+    assertThrows(ResourceNotFoundException.class, () -> service.getProductById(productId));
+  }
+
+  @Test
   void shouldGetProducts(@Given List<ProductEntity> entities, @Given ProductResponse response) {
 
     when(repo.findAll()).thenReturn(entities);
@@ -88,5 +95,10 @@ class ProductPostgresServiceTest {
     ProductResponse result = service.updateProduct(productId, request);
 
     assertThat(result).isNotNull().isEqualTo(response);
+  }
+
+  @Test
+  void updateProductByIdShouldThrow(@Given UUID productId, @Given ProductRequest request) {
+    assertThrows(ResourceNotFoundException.class, () -> service.updateProduct(productId, request));
   }
 }

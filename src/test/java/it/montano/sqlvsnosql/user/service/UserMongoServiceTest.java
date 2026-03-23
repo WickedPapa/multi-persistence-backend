@@ -1,10 +1,12 @@
 package it.montano.sqlvsnosql.user.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 import it.montano.sqlvsnosql.common.mapper.UserMapper;
 import it.montano.sqlvsnosql.config.ConfiguredTest;
+import it.montano.sqlvsnosql.config.exeption.ResourceNotFoundException;
 import it.montano.sqlvsnosql.dto.UserRequest;
 import it.montano.sqlvsnosql.dto.UserResponse;
 import it.montano.sqlvsnosql.user.model.UserDocument;
@@ -57,6 +59,11 @@ class UserMongoServiceTest {
     UserResponse result = service.getUserById(userId);
 
     assertThat(result).isNotNull().isEqualTo(response);
+  }
+
+  @Test
+  void getUserByIdShouldThrow(@Given UUID userId) {
+    assertThrows(ResourceNotFoundException.class, () -> service.getUserById(userId));
   }
 
   @Test
