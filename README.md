@@ -112,3 +112,11 @@ The application is designed to **dynamically switch between the two databases** 
 - Spring AOP for centralized logging
 
 ---
+
+## 🤖 AI Usage
+
+Part of this project's documentation and JavaDoc comments were generated with the support of Artificial Intelligence tools.
+
+All generated content has been reviewed and refined to ensure correctness, clarity, and alignment with the intended design and implementation.
+
+---

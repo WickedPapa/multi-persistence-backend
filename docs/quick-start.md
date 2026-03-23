@@ -12,32 +12,29 @@ Install Docker Desktop (includes Docker Compose):
 
 ---
 
-## ▶️ Run the application
+## ▶️ How to run the application
 
-### 🐘 PostgreSQL (relational) (default)
+To start the application, open a terminal in the **root of the project** and run **one of the following commands**, choosing based on:
 
-#### ![Linux](https://img.shields.io/badge/Linux-FCC624?logo=linux&logoColor=black)
-```bash
-APP_DATASOURCE=POSTGRES docker compose up -d --build
-```
-#### ![Windows PowerShell](https://img.shields.io/badge/Windows-PowerShell-0078D6?logo=powershell&logoColor=white)
+- your operating system: **Linux** or **Windows**
+- the datasource: **🐘 PostgreSQL (relational)** or **🍃 MongoDB (NoSQL)**
+
+### Windows (PowerShell)
 ```bash
 $env:HOME=$env:USERPROFILE; $env:APP_DATASOURCE="POSTGRES"; docker compose up -d --build
 ```
-
-### 🍃 MongoDB (NoSQL)
-
-#### ![Linux](https://img.shields.io/badge/Linux-FCC624?logo=linux&logoColor=black)
-```bash
-APP_DATASOURCE=MONGODB docker compose up -d --build
-```
-
-#### ![Windows PowerShell](https://img.shields.io/badge/Windows-PowerShell-0078D6?logo=powershell&logoColor=white)
 ```bash
 $env:HOME=$env:USERPROFILE; $env:APP_DATASOURCE="MONGODB"; docker compose up -d --build
 ```
 
----
+### Linux
+```bash
+APP_DATASOURCE="POSTGRES" docker compose up -d --build
+```
+
+```bash
+APP_DATASOURCE="MONGODB" docker compose up -d --build
+```
 
 ## 🧪 Run API tests (automatic)
 
