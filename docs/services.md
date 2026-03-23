@@ -22,12 +22,15 @@ Web interface to explore relational data (tables, queries).
 
 ### First-time setup
 
-- Add new server
-- Name → `postgres`
-- Host → `postgres`
-- Port → `5432`
-- Username → `postgres-admin`
-- Password → `postgres-psw`
+- General
+  - Add new server
+- Connection
+  - Add new server
+  - Name → `postgres`
+  - Host → `postgres`
+  - Port → `5432`
+  - Username → `postgres-admin`
+  - Password → `postgres-psw`
 
 ---
 
