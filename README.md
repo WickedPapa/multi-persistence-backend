@@ -66,9 +66,9 @@ The application is designed to **dynamically switch between the two databases** 
 
 ## 📚 Documentation
 
-- 👉 [Quick Start](docs/quick-start.md)
-- 👉 [Architecture](docs/architecture.md)
-- 👉 [Services](docs/services.md)
+- 👉 [Quick Start](docs/quick-start.md) → Step-by-step guide to run the application locally with Docker
+- 👉 [Architecture](docs/architecture.md) → Overview of the system design, components, and SQL vs NoSQL approach
+- 👉 [Services](docs/services.md) → List of all available services, APIs, UIs, and monitoring endpoints
 
 ---
 
