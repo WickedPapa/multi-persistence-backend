@@ -18,11 +18,16 @@ public class OrderItemEntity {
   @GeneratedValue(strategy = GenerationType.UUID)
   UUID id;
 
+  @Column(nullable = false)
   UUID productId;
+
+  @Column(nullable = false)
   Integer quantity;
+
+  @Column(nullable = false)
   Double price;
 
   @ManyToOne
-  @JoinColumn(name = "order_id")
+  @JoinColumn(name = "order_id", nullable = false)
   OrderEntity order;
 }

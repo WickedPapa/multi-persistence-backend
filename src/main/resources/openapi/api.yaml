@@ -479,16 +479,6 @@ components:
           description: Quantity of the product
           minimum: 1
 
-    OrderItemUpdateRequest:
-      type: object
-      required:
-        - quantity
-      properties:
-        quantity:
-          type: integer
-          description: Updated quantity
-          minimum: 1
-
     UserResponse:
       type: object
       required:

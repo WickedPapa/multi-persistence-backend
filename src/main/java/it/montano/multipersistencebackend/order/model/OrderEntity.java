@@ -20,10 +20,12 @@ public class OrderEntity {
   @GeneratedValue(strategy = GenerationType.UUID)
   UUID id;
 
+  @Column(nullable = false)
   UUID userId;
 
   @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
   List<OrderItemEntity> items = new ArrayList<>();
 
+  @Column(nullable = false)
   Double total;
 }
