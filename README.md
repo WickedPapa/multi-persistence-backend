@@ -19,7 +19,7 @@
 ![Observability](https://img.shields.io/badge/monitoring-Spring_Actuator-brightgreen)
 ![AOP](https://img.shields.io/badge/logging-AOP-lightgrey)
 
-# SQL vs NoSQL Backend
+# Multi Persistence Backend
 
 This project was developed as part of a Bachelor's thesis in Computer Engineering.
 
@@ -40,7 +40,7 @@ The application is designed to **dynamically switch between the two databases** 
 ## 🎯 Objectives
 
 - Provide a unified API layer independent from the underlying database
-- Compare relational vs document-based data modeling
+- Compare relational and document-based data modeling
 - Analyze trade-offs between SQL and NoSQL
 - Demonstrate real-world backend patterns using both approaches
 
@@ -67,7 +67,7 @@ The application is designed to **dynamically switch between the two databases** 
 ## 📚 Documentation
 
 - 👉 [Quick Start](docs/quick-start.md) → Step-by-step guide to run the application locally with Docker
-- 👉 [Architecture](docs/architecture.md) → Overview of the system design, components, and SQL vs NoSQL approach
+- 👉 [Architecture](docs/architecture.md) → Overview of the system design, components, and the comparison between SQL and NoSQL approaches
 - 👉 [Services](docs/services.md) → List of all available services, APIs, UIs, and monitoring endpoints
 
 ---

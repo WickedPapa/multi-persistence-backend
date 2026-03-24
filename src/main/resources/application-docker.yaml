@@ -1,7 +1,7 @@
 spring:
   datasource:
-    url: jdbc:postgresql://postgres:5432/sql_vs_nosql_postgres_db
+    url: jdbc:postgresql://postgres:5432/multi_persistence_backend_postgres_db
 
   data:
     mongodb:
-      uri: mongodb://mongo-admin:mongo-psw@mongo:27017/sql_vs_nosql_mongo_db?authSource=admin
+      uri: mongodb://mongo-admin:mongo-psw@mongo:27017/multi_persistence_backend_mongo_db?authSource=admin

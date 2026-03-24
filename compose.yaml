@@ -11,7 +11,7 @@ services:
     environment:
       POSTGRES_USER: postgres-admin
       POSTGRES_PASSWORD: postgres-psw
-      POSTGRES_DB: sql_vs_nosql_postgres_db
+      POSTGRES_DB: multi_persistence_backend_postgres_db
     ports:
       - "5432:5432"
     volumes:
@@ -74,7 +74,7 @@ services:
 
   api-server:
     build: .
-    container_name: sql-vs-nosql-api-server
+    container_name: multi-persistence-backend-api-server
     restart: always
     ports:
       - "8080:8080"

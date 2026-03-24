@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
     <property name="LOG_PATH" value="logs"/>
-    <property name="LOG_FILE" value="${LOG_PATH}/sql-vs-nosql.log"/>
+    <property name="LOG_FILE" value="${LOG_PATH}/multi-persistence-backend.log"/>
 
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
@@ -12,7 +12,7 @@
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${LOG_FILE}</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${LOG_PATH}/sql-vs-nosql.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>${LOG_PATH}/multi-persistence-backend.%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>7</maxHistory>
         </rollingPolicy>
         <encoder>
@@ -21,7 +21,7 @@
     </appender>
 
     <logger name="org.springframework" level="INFO"/>
-    <logger name="it.montano.sqlvsnosql.logging" level="INFO"/>
+    <logger name="it.montano.multipersistencebackend.logging" level="INFO"/>
 
     <root level="INFO">
         <appender-ref ref="CONSOLE"/>

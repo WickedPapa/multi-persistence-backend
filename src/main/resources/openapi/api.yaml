@@ -1,7 +1,7 @@
 openapi: 3.0.3
 
 info:
-  title: SQL vs NoSQL Backend
+  title: Multi Persistence Backend
   version: 1.0.0
   description: Backend demo for comparing relational and NoSQL databases
 
