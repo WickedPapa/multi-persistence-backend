@@ -48,7 +48,7 @@ public interface OrderMapper {
 
   OrderResponse toResponse(OrderDocument entity);
 
-  @Mapping(target = "productId", source = "productEmbedded.id")
+  @Mapping(target = "productId", source = "productEmbedded.productId")
   @Mapping(target = "name", source = "productEmbedded.name")
   @Mapping(target = "price", source = "productEmbedded.price")
   OrderItemResponse toResponse(OrderItemDocument entity);
@@ -61,7 +61,7 @@ public interface OrderMapper {
   @Mapping(target = "total", expression = "java(calculateTotal(request.getItems()))")
   OrderDocument toDocument(OrderRequestDto request, UserResponse userResponse);
 
-  @Mapping(target = "productEmbedded.id", source = "productId")
+  @Mapping(target = "productEmbedded.productId", source = "productId")
   @Mapping(target = "productEmbedded.name", source = "name")
   @Mapping(target = "productEmbedded.price", source = "price")
   OrderItemDocument toDocument(OrderItemRequestDto request);

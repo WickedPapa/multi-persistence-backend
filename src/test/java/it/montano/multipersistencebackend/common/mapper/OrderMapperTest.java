@@ -77,7 +77,8 @@ class OrderMapperTest {
                   .zipSatisfy(
                       document.getItems(),
                       (r, d) -> {
-                        assertThat(r.getProductId()).isEqualTo(d.getProductEmbedded().getId());
+                        assertThat(r.getProductId())
+                            .isEqualTo(d.getProductEmbedded().getProductId());
                         assertThat(r.getName()).isEqualTo(d.getProductEmbedded().getName());
                         assertThat(r.getPrice()).isEqualTo(d.getProductEmbedded().getPrice());
                       });
@@ -99,7 +100,8 @@ class OrderMapperTest {
                   .zipSatisfy(
                       request.getItems(),
                       (r, d) -> {
-                        assertThat(r.getProductEmbedded().getId()).isEqualTo(d.getProductId());
+                        assertThat(r.getProductEmbedded().getProductId())
+                            .isEqualTo(d.getProductId());
                         assertThat(r.getProductEmbedded().getName()).isEqualTo(d.getName());
                         assertThat(r.getProductEmbedded().getPrice()).isEqualTo(d.getPrice());
                       });
