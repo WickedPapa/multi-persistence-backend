@@ -14,6 +14,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +31,7 @@ public class UserPostgresService implements UserService {
    * @return persisted user response
    */
   @CacheEvict(value = "users", allEntries = true)
+  @Transactional
   @Override
   public @NonNull UserResponse createUser(@NonNull UserRequest request) {
     UserEntity entity = mapper.toEntity(request);
@@ -42,6 +44,7 @@ public class UserPostgresService implements UserService {
    * @param userId identifier of the user
    */
   @CacheEvict(value = "users", key = "#userId")
+  @Transactional
   @Override
   public void deleteUser(@NonNull UUID userId) {
     repo.deleteById(userId);
@@ -54,6 +57,7 @@ public class UserPostgresService implements UserService {
    * @return found user response
    */
   @Cacheable(value = "users", key = "#userId")
+  @Transactional(readOnly = true)
   @Override
   public @NonNull UserResponse getUserById(@NonNull UUID userId) {
     return repo.findById(userId)
@@ -66,6 +70,7 @@ public class UserPostgresService implements UserService {
    *
    * @return list of user responses
    */
+  @Transactional(readOnly = true)
   @Override
   public @NonNull List<UserResponse> getUsers() {
     return repo.findAll().stream().map(mapper::toResponse).toList();

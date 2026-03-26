@@ -15,6 +15,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +32,7 @@ public class ProductPostgresService implements ProductService {
    * @return persisted product response
    */
   @CacheEvict(value = "products", allEntries = true)
+  @Transactional
   @Override
   public @NonNull ProductResponse createProduct(@NonNull ProductRequest request) {
     ProductEntity entity = mapper.toEntity(request);
@@ -43,6 +45,7 @@ public class ProductPostgresService implements ProductService {
    * @param productId identifier of the product
    */
   @CacheEvict(value = "products", key = "#productId")
+  @Transactional
   @Override
   public void deleteProduct(@NonNull UUID productId) {
     repo.deleteById(productId);
@@ -55,6 +58,7 @@ public class ProductPostgresService implements ProductService {
    * @return found product response
    */
   @Cacheable(value = "products", key = "#productId")
+  @Transactional(readOnly = true)
   @Override
   public @NonNull ProductResponse getProductById(@NonNull UUID productId) {
     return repo.findById(productId)
@@ -67,6 +71,7 @@ public class ProductPostgresService implements ProductService {
    *
    * @return list of product responses
    */
+  @Transactional(readOnly = true)
   @Override
   public @NonNull List<ProductResponse> getProducts() {
     return repo.findAll().stream().map(mapper::toResponse).toList();
@@ -80,6 +85,7 @@ public class ProductPostgresService implements ProductService {
    * @return updated product response
    */
   @CachePut(value = "products", key = "#productId")
+  @Transactional
   @Override
   public @NonNull ProductResponse updateProduct(
       @NonNull UUID productId, ProductRequest productRequest) {

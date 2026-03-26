@@ -18,6 +18,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -36,6 +37,7 @@ public class OrderPostgresService implements OrderService {
    * @return persisted order response with hydrated user data
    */
   @CacheEvict(value = "orders-by-user", key = "#request.userId")
+  @Transactional
   @Override
   public @NonNull OrderResponse createOrder(@NonNull OrderRequest request) {
     OrderRequestDto orderItemRequestDto = mapper.toDto(request);
@@ -54,6 +56,7 @@ public class OrderPostgresService implements OrderService {
         @CacheEvict(value = "orders-by-user", allEntries = true),
         @CacheEvict(value = "orders", key = "#orderId")
       })
+  @Transactional
   @Override
   public void deleteOrder(@NonNull UUID orderId) {
     repo.deleteById(orderId);
@@ -64,6 +67,7 @@ public class OrderPostgresService implements OrderService {
    *
    * @return ordered list by quantity sold
    */
+  @Transactional(readOnly = true)
   @Override
   public @NonNull List<MostSoldProductResponse> getMostSoldProducts() {
     return repo.getMostSoldProduct();
@@ -76,6 +80,7 @@ public class OrderPostgresService implements OrderService {
    * @return found order response
    */
   @Cacheable(value = "orders", key = "#orderId")
+  @Transactional(readOnly = true)
   @Override
   public @NonNull OrderResponse getOrderById(@NonNull UUID orderId) {
     return repo.findById(orderId)
@@ -91,6 +96,7 @@ public class OrderPostgresService implements OrderService {
    * @return hydrated order responses
    */
   @Cacheable(value = "orders-by-user", key = "#userId")
+  @Transactional(readOnly = true)
   @Override
   public @NonNull List<OrderResponse> getOrdersByUserId(@NonNull UUID userId) {
     return repo.findByUserId(userId).stream()
@@ -104,6 +110,7 @@ public class OrderPostgresService implements OrderService {
    *
    * @return hydrated order responses
    */
+  @Transactional(readOnly = true)
   @Override
   public @NonNull List<OrderResponse> getOrders() {
     return repo.findAll().stream().map(mapper::toResponse).map(this::enrichOrderResponse).toList();
@@ -114,6 +121,7 @@ public class OrderPostgresService implements OrderService {
    *
    * @return spending summary
    */
+  @Transactional(readOnly = true)
   @Override
   public @NonNull List<TotalSpentPerUserResponse> getTotalSpentPerUser() {
     return repo.getTotalSpentPerUser();

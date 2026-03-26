@@ -4,6 +4,8 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 multi-persistence-backend.log
+multi-persistence-backend.*.log
+
 
 ### STS ###
 .apt_generated
