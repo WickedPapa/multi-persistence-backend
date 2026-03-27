@@ -10,7 +10,8 @@ import org.springframework.data.mongodb.repository.Aggregation;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 public interface OrderMongoRepository extends MongoRepository<OrderDocument, UUID> {
-  List<OrderDocument> findByUserUserId(UUID userId);
+  @NonNull
+  List<OrderDocument> findByUserUserId(@NonNull UUID userId);
 
   /**
    * Aggregates spending totals grouped by user.
