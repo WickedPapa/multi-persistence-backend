@@ -120,13 +120,13 @@ class OrderPostgresServiceTest {
   @Test
   void shouldGetOrders(@Given OrderEntity order) {
 
-    when(repo.findAll()).thenReturn(List.of(order));
+    when(repo.findAllWithItems()).thenReturn(List.of(order));
 
     List<OrderResponse> result = service.getOrders();
 
     assertThat(result).isNotNull().hasSize(1);
 
-    verify(repo).findAll();
+    verify(repo).findAllWithItems();
   }
 
   @Test

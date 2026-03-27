@@ -110,7 +110,7 @@ public class OrderPostgresService implements OrderService {
   @Transactional(readOnly = true)
   @Override
   public @NonNull List<OrderResponse> getOrders() {
-    return repo.findAll().stream().map(mapper::toResponse).toList();
+    return repo.findAllWithItems().stream().map(mapper::toResponse).toList();
   }
 
   /**

@@ -5,6 +5,7 @@ import it.montano.multipersistencebackend.dto.TotalSpentPerUserResponse;
 import it.montano.multipersistencebackend.order.model.OrderDocument;
 import java.util.List;
 import java.util.UUID;
+import lombok.NonNull;
 import org.springframework.data.mongodb.repository.Aggregation;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
@@ -34,6 +35,7 @@ public interface OrderMongoRepository extends MongoRepository<OrderDocument, UUI
             + "email: 1 "
             + "} }"
       })
+  @NonNull
   List<TotalSpentPerUserResponse> getTotalSpentPerUser();
 
   /**
@@ -48,5 +50,6 @@ public interface OrderMongoRepository extends MongoRepository<OrderDocument, UUI
         "{ $sort: { totalQuantity: -1 } }",
         "{ $project: { _id: 0, productId: '$_id', name: 1, totalQuantity: 1 } }"
       })
+  @NonNull
   List<MostSoldProductResponse> getMostSoldProduct();
 }

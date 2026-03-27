@@ -4,12 +4,28 @@ import it.montano.multipersistencebackend.dto.MostSoldProductResponse;
 import it.montano.multipersistencebackend.dto.TotalSpentPerUserResponse;
 import it.montano.multipersistencebackend.order.model.OrderEntity;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
+import lombok.NonNull;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 public interface OrderPostgresRepository extends JpaRepository<OrderEntity, UUID> {
-  List<OrderEntity> findByUserId(UUID userId);
+
+  @EntityGraph(attributePaths = {"items"})
+  @Query("SELECT o FROM OrderEntity o")
+  @NonNull
+  List<OrderEntity> findAllWithItems();
+
+  @Override
+  @EntityGraph(attributePaths = {"items"})
+  @NonNull
+  Optional<OrderEntity> findById(@NonNull UUID uuid);
+
+  @EntityGraph(attributePaths = {"items"})
+  @NonNull
+  List<OrderEntity> findByUserId(@NonNull UUID userId);
 
   /**
    * Aggregates spending totals grouped by user via JPQL.
@@ -29,6 +45,7 @@ public interface OrderPostgresRepository extends JpaRepository<OrderEntity, UUID
     WHERE o.userId = u.id
     GROUP BY u.id, u.firstName, u.lastName, u.email
   """)
+  @NonNull
   List<TotalSpentPerUserResponse> getTotalSpentPerUser();
 
   /**
@@ -48,5 +65,6 @@ public interface OrderPostgresRepository extends JpaRepository<OrderEntity, UUID
     GROUP BY p.id, p.name
     ORDER BY SUM(oi.quantity) DESC
   """)
+  @NonNull
   List<MostSoldProductResponse> getMostSoldProduct();
 }
