@@ -6,7 +6,7 @@ credentials:
     password: mongo-psw
 
 app:
-  datasource: ${APP_DATASOURCE:POSTGRES}
+  datasource: ${APP_DATASOURCE:postgres}
 
 spring:
   datasource:

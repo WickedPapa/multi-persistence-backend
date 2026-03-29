@@ -45,8 +45,8 @@ The underlying database is selected at runtime.
 ## 🔄 Database Switching
 
 The database is selected via environment variable:
-- > APP_DATASOURCE=POSTGRES
-- > APP_DATASOURCE=MONGODB
+- > APP_DATASOURCE=postgres
+- > APP_DATASOURCE=mongo
 
 Spring configuration enables the correct repository implementation at runtime.
 

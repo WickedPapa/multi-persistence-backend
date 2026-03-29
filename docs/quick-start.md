@@ -21,19 +21,19 @@ To start the application, open a terminal in the **root of the project** and run
 
 ### Windows (PowerShell)
 ```bash
-$env:HOME=$env:USERPROFILE; $env:APP_DATASOURCE="POSTGRES"; docker compose up -d --build
+$env:HOME=$env:USERPROFILE; $env:APP_DATASOURCE="postgres"; docker compose up -d --build
 ```
 ```bash
-$env:HOME=$env:USERPROFILE; $env:APP_DATASOURCE="MONGODB"; docker compose up -d --build
+$env:HOME=$env:USERPROFILE; $env:APP_DATASOURCE="mongo"; docker compose up -d --build
 ```
 
 ### Linux
 ```bash
-APP_DATASOURCE="POSTGRES" docker compose up -d --build
+APP_DATASOURCE="postgres" docker compose up -d --build
 ```
 
 ```bash
-APP_DATASOURCE="MONGODB" docker compose up -d --build
+APP_DATASOURCE="mongo" docker compose up -d --build
 ```
 
 ## 🧪 Run API tests (automatic)
