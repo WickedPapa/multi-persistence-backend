@@ -1,6 +1,7 @@
 package it.montano.multipersistencebackend.product.service;
 
-import it.montano.multipersistencebackend.common.constant.AppConfigConstants;
+import it.montano.multipersistencebackend.common.annotation.ConditionalOnDatasource;
+import it.montano.multipersistencebackend.common.constant.Datasources;
 import it.montano.multipersistencebackend.common.mapper.ProductMapper;
 import it.montano.multipersistencebackend.config.exeption.ResourceNotFoundException;
 import it.montano.multipersistencebackend.dto.ProductRequest;
@@ -11,7 +12,6 @@ import java.util.List;
 import java.util.UUID;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -19,10 +19,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-@ConditionalOnProperty(
-    prefix = AppConfigConstants.PREFIX,
-    name = AppConfigConstants.DATASOURCE,
-    havingValue = AppConfigConstants.MONGODB)
+@ConditionalOnDatasource(Datasources.MONGO)
 public class ProductMongoService implements ProductService {
 
   private final ProductMongoRepository repo;

@@ -1,6 +1,7 @@
 package it.montano.multipersistencebackend.order.service;
 
-import it.montano.multipersistencebackend.common.constant.AppConfigConstants;
+import it.montano.multipersistencebackend.common.annotation.ConditionalOnDatasource;
+import it.montano.multipersistencebackend.common.constant.Datasources;
 import it.montano.multipersistencebackend.common.dto.OrderItemRequestDto;
 import it.montano.multipersistencebackend.common.dto.OrderRequestDto;
 import it.montano.multipersistencebackend.common.mapper.OrderMapper;
@@ -14,7 +15,6 @@ import java.util.List;
 import java.util.UUID;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
@@ -23,10 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@ConditionalOnProperty(
-    prefix = AppConfigConstants.PREFIX,
-    name = AppConfigConstants.DATASOURCE,
-    havingValue = AppConfigConstants.POSTGRES)
+@ConditionalOnDatasource(Datasources.POSTGRES)
 public class OrderPostgresService implements OrderService {
 
   private final UserService userService;

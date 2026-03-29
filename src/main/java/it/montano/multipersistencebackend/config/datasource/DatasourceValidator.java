@@ -1,6 +1,6 @@
 package it.montano.multipersistencebackend.config.datasource;
 
-import it.montano.multipersistencebackend.common.constant.AppConfigConstants;
+import it.montano.multipersistencebackend.common.constant.Datasources;
 import it.montano.multipersistencebackend.config.properties.AppProperties;
 import jakarta.annotation.Nullable;
 import jakarta.annotation.PostConstruct;
@@ -19,8 +19,6 @@ import org.springframework.context.annotation.Configuration;
 public class DatasourceValidator {
 
   private final AppProperties appProperties;
-  private static final String PROPERTY_NAME =
-      AppConfigConstants.PREFIX + "." + AppConfigConstants.DATASOURCE;
   private static final String INITIAL_MESSAGE = "Evaluating start configuration...\n";
   private static final String SEPARATOR = "--------------------------------------------------\n";
   private static final String SUCCESS_TITLE = "CONFIGURATION VALID\n";
@@ -36,7 +34,7 @@ public class DatasourceValidator {
    */
   @PostConstruct
   public void validateDatasource() {
-    if (!AppConfigConstants.KNOW_DATASOURCES.contains(appProperties.datasource())) {
+    if (!Datasources.ALLOWED_DATASOURCES.contains(appProperties.datasource())) {
       String errorMessage = buildMessage(ERROR_TITLE, appProperties.datasource(), ERROR_OUTCOME);
       log.error(errorMessage);
       throw new IllegalStateException(errorMessage);
@@ -53,9 +51,9 @@ public class DatasourceValidator {
         + logTitle
         + String.format(
             COMMON_LOG,
-            PROPERTY_NAME,
+            Datasources.PROPERTY_KEY,
             datasource,
-            String.join(", ", AppConfigConstants.KNOW_DATASOURCES))
+            String.join(", ", Datasources.ALLOWED_DATASOURCES))
         + resultMessage
         + SEPARATOR;
   }

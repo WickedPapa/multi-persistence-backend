@@ -2,6 +2,7 @@ package it.montano.multipersistencebackend;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import it.montano.multipersistencebackend.common.constant.Datasources;
 import it.montano.multipersistencebackend.order.service.OrderPostgresService;
 import it.montano.multipersistencebackend.order.service.OrderService;
 import it.montano.multipersistencebackend.product.service.ProductPostgresService;
@@ -13,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 
-@SpringBootTest(properties = {"app.datasource=POSTGRES"})
+@SpringBootTest(properties = {AbstractIntegrationTest.PROPERTY_KEY_EQUALS + Datasources.POSTGRES})
 class PostgresTest extends AbstractIntegrationTest {
 
   @Autowired ApplicationContext context;

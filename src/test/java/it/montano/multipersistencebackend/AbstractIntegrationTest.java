@@ -1,5 +1,6 @@
 package it.montano.multipersistencebackend;
 
+import it.montano.multipersistencebackend.common.constant.Datasources;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.MongoDBContainer;
@@ -9,6 +10,8 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 @Testcontainers
 public abstract class AbstractIntegrationTest {
+
+  protected static final String PROPERTY_KEY_EQUALS = Datasources.PROPERTY_KEY + "=";
 
   @Container
   static PostgreSQLContainer<?> postgres =
