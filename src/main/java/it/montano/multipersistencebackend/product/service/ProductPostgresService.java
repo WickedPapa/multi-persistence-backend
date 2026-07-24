@@ -3,7 +3,7 @@ package it.montano.multipersistencebackend.product.service;
 import it.montano.multipersistencebackend.common.annotation.ConditionalOnDatasource;
 import it.montano.multipersistencebackend.common.constant.Datasources;
 import it.montano.multipersistencebackend.common.mapper.ProductMapper;
-import it.montano.multipersistencebackend.config.exeption.ResourceNotFoundException;
+import it.montano.multipersistencebackend.config.exception.ResourceNotFoundException;
 import it.montano.multipersistencebackend.dto.ProductRequest;
 import it.montano.multipersistencebackend.dto.ProductResponse;
 import it.montano.multipersistencebackend.product.model.ProductEntity;
@@ -89,7 +89,7 @@ public class ProductPostgresService implements ProductService {
   @Transactional
   @Override
   public @NonNull ProductResponse updateProduct(
-      @NonNull UUID productId, ProductRequest productRequest) {
+      @NonNull UUID productId, @NonNull ProductRequest productRequest) {
     ProductEntity entity =
         repo.findById(productId)
             .orElseThrow(() -> new ResourceNotFoundException(productId.toString()));

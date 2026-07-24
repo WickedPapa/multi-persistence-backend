@@ -1,4 +1,4 @@
-package it.montano.multipersistencebackend.config.exeption;
+package it.montano.multipersistencebackend.config.exception;
 
 import it.montano.multipersistencebackend.dto.ErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;

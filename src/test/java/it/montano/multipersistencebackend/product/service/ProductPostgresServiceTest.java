@@ -6,7 +6,7 @@ import static org.mockito.Mockito.*;
 
 import it.montano.multipersistencebackend.common.mapper.ProductMapper;
 import it.montano.multipersistencebackend.config.ConfiguredTest;
-import it.montano.multipersistencebackend.config.exeption.ResourceNotFoundException;
+import it.montano.multipersistencebackend.config.exception.ResourceNotFoundException;
 import it.montano.multipersistencebackend.dto.ProductRequest;
 import it.montano.multipersistencebackend.dto.ProductResponse;
 import it.montano.multipersistencebackend.product.model.ProductEntity;

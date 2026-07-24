@@ -3,7 +3,7 @@ package it.montano.multipersistencebackend.user.service;
 import it.montano.multipersistencebackend.common.annotation.ConditionalOnDatasource;
 import it.montano.multipersistencebackend.common.constant.Datasources;
 import it.montano.multipersistencebackend.common.mapper.UserMapper;
-import it.montano.multipersistencebackend.config.exeption.ResourceNotFoundException;
+import it.montano.multipersistencebackend.config.exception.ResourceNotFoundException;
 import it.montano.multipersistencebackend.dto.UserRequest;
 import it.montano.multipersistencebackend.dto.UserResponse;
 import it.montano.multipersistencebackend.user.model.UserEntity;

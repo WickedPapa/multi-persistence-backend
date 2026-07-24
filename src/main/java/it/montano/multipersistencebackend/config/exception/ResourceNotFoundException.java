@@ -1,4 +1,4 @@
-package it.montano.multipersistencebackend.config.exeption;
+package it.montano.multipersistencebackend.config.exception;
 
 public class ResourceNotFoundException extends RuntimeException {
   public ResourceNotFoundException(String message) {
