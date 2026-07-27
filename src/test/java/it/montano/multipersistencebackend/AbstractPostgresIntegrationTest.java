@@ -18,7 +18,7 @@ public abstract class AbstractPostgresIntegrationTest {
 
   @Container
   static PostgreSQLContainer<?> postgres =
-      new PostgreSQLContainer<>("postgres:15")
+      new PostgreSQLContainer<>("postgres:15.17")
           .withDatabaseName("multi_persistence_backend_postgres_db")
           .withUsername("postgres-admin")
           .withPassword("postgres-psw");

@@ -17,7 +17,7 @@ public abstract class AbstractMongoIntegrationTest {
           + "org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration,"
           + "org.springframework.boot.autoconfigure.flyway.FlywayAutoConfiguration";
 
-  @Container static MongoDBContainer mongo = new MongoDBContainer("mongo:7");
+  @Container static MongoDBContainer mongo = new MongoDBContainer("mongo:7.0.12");
 
   @DynamicPropertySource
   static void configure(DynamicPropertyRegistry registry) {
