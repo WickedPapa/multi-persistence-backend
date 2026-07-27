@@ -21,12 +21,15 @@ spring:
 
   data:
     mongodb:
-      uri: mongodb://mongo-admin:${credentials.mongo.password}@localhost:27017/multi_persistence_backend_mongo_db?authSource=admin
+      uri: mongodb://mongo-admin:${credentials.mongo.password}@localhost:27017/multi_persistence_backend_mongo_db?authSource=admin&retryWrites=false
       uuid-representation: standard
-      auto-index-creation: true
 
 management:
   endpoints:
     web:
       exposure:
         include: health,metrics
+
+mongock:
+  migration-scan-package: it.montano.multipersistencebackend.config.mongock
+  transaction-enabled: false
