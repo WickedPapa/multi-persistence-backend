@@ -2,6 +2,9 @@ spring:
   datasource:
     url: jdbc:postgresql://postgres:5432/multi_persistence_backend_postgres_db
 
+  jpa:
+    show-sql: false
+
   data:
     mongodb:
       uri: mongodb://mongo-admin:${credentials.mongo.password}@mongo:27017/multi_persistence_backend_mongo_db?authSource=admin&retryWrites=false
