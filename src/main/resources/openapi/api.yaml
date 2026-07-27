@@ -224,7 +224,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
         '409':
-          $ref: '#/components/responses/InternalServerError'
+          $ref: '#/components/responses/Conflict'
 
   /orders/{orderId}:
     get:
