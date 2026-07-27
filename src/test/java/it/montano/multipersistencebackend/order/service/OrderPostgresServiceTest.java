@@ -11,6 +11,7 @@ import it.montano.multipersistencebackend.dto.*;
 import it.montano.multipersistencebackend.order.model.OrderEntity;
 import it.montano.multipersistencebackend.order.repository.OrderPostgresRepository;
 import it.montano.multipersistencebackend.product.service.ProductService;
+import it.montano.multipersistencebackend.user.model.UserEntity;
 import it.montano.multipersistencebackend.user.service.UserService;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -20,6 +21,8 @@ import java.util.UUID;
 import org.instancio.junit.Given;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
@@ -32,6 +35,9 @@ class OrderPostgresServiceTest {
   @Mock UserService userService;
   @Mock ProductService productService;
   @Mock OrderPostgresRepository repo;
+  @Mock CacheManager cacheManager;
+  @Mock Cache ordersCache;
+  @Mock Cache ordersByUserCache;
 
   @Spy OrderMapper mapper = Mappers.getMapper(OrderMapper.class);
 
@@ -83,22 +89,33 @@ class OrderPostgresServiceTest {
   }
 
   @Test
-  void shouldDeleteOrder(@Given UUID orderId) {
-    when(repo.existsById(orderId)).thenReturn(true);
+  void shouldDeleteOrder(@Given UUID orderId, @Given UUID userId, @Given OrderEntity order) {
+    UserEntity user = new UserEntity();
+    user.setId(userId);
+    order.setUser(user);
+
+    when(repo.findById(orderId)).thenReturn(Optional.of(order));
+    when(cacheManager.getCache("orders")).thenReturn(ordersCache);
+    when(cacheManager.getCache("orders-by-user")).thenReturn(ordersByUserCache);
     doNothing().when(repo).deleteById(orderId);
+
     service.deleteOrder(orderId);
-    verify(repo).existsById(orderId);
+
+    verify(repo).findById(orderId);
     verify(repo).deleteById(orderId);
+    verify(ordersCache).evict(orderId);
+    verify(ordersByUserCache).evict(userId);
   }
 
   @Test
   void shouldThrowWhenDeleteOrderNotFound(@Given UUID orderId) {
-    when(repo.existsById(orderId)).thenReturn(false);
+    when(repo.findById(orderId)).thenReturn(Optional.empty());
 
     assertThrows(ResourceNotFoundException.class, () -> service.deleteOrder(orderId));
 
-    verify(repo).existsById(orderId);
+    verify(repo).findById(orderId);
     verify(repo, never()).deleteById(orderId);
+    verifyNoInteractions(cacheManager, ordersCache, ordersByUserCache);
   }
 
   @Test

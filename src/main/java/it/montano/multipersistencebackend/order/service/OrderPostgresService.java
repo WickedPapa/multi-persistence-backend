@@ -15,9 +15,9 @@ import java.util.List;
 import java.util.UUID;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +30,7 @@ public class OrderPostgresService implements OrderService {
   private final ProductService productService;
   private final OrderPostgresRepository repo;
   private final OrderMapper mapper;
+  private final CacheManager cacheManager;
 
   /**
    * Persists a new order in Postgres after enriching items.
@@ -56,18 +57,18 @@ public class OrderPostgresService implements OrderService {
    *
    * @param orderId identifier of the order to delete
    */
-  @Caching(
-      evict = {
-        @CacheEvict(value = "orders-by-user", allEntries = true),
-        @CacheEvict(value = "orders", key = "#orderId")
-      })
   @Transactional
   @Override
   public void deleteOrder(@NonNull UUID orderId) {
-    if (!repo.existsById(orderId)) {
-      throw new ResourceNotFoundException("Order not found with id " + orderId);
-    }
+    OrderEntity order =
+        repo.findById(orderId)
+            .orElseThrow(
+                () -> new ResourceNotFoundException("Order not found with id " + orderId));
+    UUID userId = order.getUser().getId();
+
     repo.deleteById(orderId);
+    evictCache("orders", orderId);
+    evictCache("orders-by-user", userId);
   }
 
   /**
@@ -151,5 +152,12 @@ public class OrderPostgresService implements OrderService {
     ProductResponse product = productService.getProductById(orderItemRequestDto.getProductId());
     orderItemRequestDto.setName(product.getName());
     orderItemRequestDto.setPrice(product.getPrice());
+  }
+
+  private void evictCache(@NonNull String cacheName, @NonNull Object key) {
+    var cache = cacheManager.getCache(cacheName);
+    if (cache != null) {
+      cache.evict(key);
+    }
   }
 }

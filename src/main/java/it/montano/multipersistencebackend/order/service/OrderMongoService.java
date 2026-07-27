@@ -15,9 +15,9 @@ import java.util.List;
 import java.util.UUID;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -29,6 +29,7 @@ public class OrderMongoService implements OrderService {
   private final ProductService productService;
   private final OrderMongoRepository repo;
   private final OrderMapper mapper;
+  private final CacheManager cacheManager;
 
   /**
    * Creates an order in MongoDB after enriching prices and user info.
@@ -54,17 +55,17 @@ public class OrderMongoService implements OrderService {
    *
    * @param orderId identifier of the order to delete
    */
-  @Caching(
-      evict = {
-        @CacheEvict(value = "orders-by-user", allEntries = true),
-        @CacheEvict(value = "orders", key = "#orderId")
-      })
   @Override
   public void deleteOrder(@NonNull UUID orderId) {
-    if (!repo.existsById(orderId)) {
-      throw new ResourceNotFoundException("Order not found with id " + orderId);
-    }
+    OrderDocument order =
+        repo.findById(orderId)
+            .orElseThrow(
+                () -> new ResourceNotFoundException("Order not found with id " + orderId));
+    UUID userId = order.getUser().getUserId();
+
     repo.deleteById(orderId);
+    evictCache("orders", orderId);
+    evictCache("orders-by-user", userId);
   }
 
   /**
@@ -144,5 +145,12 @@ public class OrderMongoService implements OrderService {
         productService.getProductById(orderItemRequestDto.getProductId());
     orderItemRequestDto.setPrice(productResponse.getPrice());
     orderItemRequestDto.setName(productResponse.getName());
+  }
+
+  private void evictCache(@NonNull String cacheName, @NonNull Object key) {
+    var cache = cacheManager.getCache(cacheName);
+    if (cache != null) {
+      cache.evict(key);
+    }
   }
 }
