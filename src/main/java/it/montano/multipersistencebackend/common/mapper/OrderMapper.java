@@ -20,10 +20,10 @@ import org.mapstruct.MappingTarget;
 @Mapper(imports = {UUID.class})
 public interface OrderMapper {
 
-  @Mapping(target = "user.userId", source = "userId")
-  @Mapping(target = "user.firstName", source = "firstName")
-  @Mapping(target = "user.lastName", source = "lastName")
-  @Mapping(target = "user.email", source = "email")
+  @Mapping(target = "user.userId", source = "user.id")
+  @Mapping(target = "user.firstName", source = "userFirstNameSnapshot")
+  @Mapping(target = "user.lastName", source = "userLastNameSnapshot")
+  @Mapping(target = "user.email", source = "userEmailSnapshot")
   OrderResponse toResponse(OrderEntity entity);
 
   OrderItemResponse toResponse(OrderItemEntity entity);
@@ -38,6 +38,10 @@ public interface OrderMapper {
   OrderItemRequestDto toDto(OrderItemRequest request);
 
   @Mapping(target = "id", ignore = true)
+  @Mapping(target = "user.id", source = "userId")
+  @Mapping(target = "userFirstNameSnapshot", source = "firstName")
+  @Mapping(target = "userLastNameSnapshot", source = "lastName")
+  @Mapping(target = "userEmailSnapshot", source = "email")
   @Mapping(target = "total", expression = "java(calculateTotal(request.getItems()))")
   OrderEntity toEntity(OrderRequestDto request);
 

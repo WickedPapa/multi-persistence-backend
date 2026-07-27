@@ -38,9 +38,27 @@ class OrderMapperTest {
 
     assertThat(entity)
         .isNotNull()
-        .usingRecursiveComparison()
-        .ignoringFields("id", "total", "items.id", "items.order")
-        .isEqualTo(requestDto);
+        .satisfies(
+            e -> {
+              assertThat(e.getId()).isNull();
+              assertThat(e.getUser()).isNotNull();
+              assertThat(e.getUser().getId()).isEqualTo(requestDto.getUserId());
+              assertThat(e.getUserFirstNameSnapshot()).isEqualTo(requestDto.getFirstName());
+              assertThat(e.getUserLastNameSnapshot()).isEqualTo(requestDto.getLastName());
+              assertThat(e.getUserEmailSnapshot()).isEqualTo(requestDto.getEmail());
+              assertThat(e.getTotal()).isEqualTo(mapper.calculateTotal(requestDto.getItems()));
+              assertThat(e.getItems())
+                  .zipSatisfy(
+                      requestDto.getItems(),
+                      (item, source) -> {
+                        assertThat(item.getId()).isNull();
+                        assertThat(item.getOrder()).isSameAs(e);
+                        assertThat(item.getProductId()).isEqualTo(source.getProductId());
+                        assertThat(item.getName()).isEqualTo(source.getName());
+                        assertThat(item.getPrice()).isEqualTo(source.getPrice());
+                        assertThat(item.getQuantity()).isEqualTo(source.getQuantity());
+                      });
+            });
   }
 
   @Test
@@ -63,14 +81,20 @@ class OrderMapperTest {
         .isNotNull()
         .satisfies(
             r -> {
-              assertThat(r.getUser().getUserId()).isEqualTo(entity.getUserId());
-              assertThat(r.getUser().getFirstName()).isEqualTo(entity.getFirstName());
-              assertThat(r.getUser().getLastName()).isEqualTo(entity.getLastName());
-              assertThat(r.getUser().getEmail()).isEqualTo(entity.getEmail());
+              assertThat(r.getUser().getUserId()).isEqualTo(entity.getUser().getId());
+              assertThat(r.getUser().getFirstName()).isEqualTo(entity.getUserFirstNameSnapshot());
+              assertThat(r.getUser().getLastName()).isEqualTo(entity.getUserLastNameSnapshot());
+              assertThat(r.getUser().getEmail()).isEqualTo(entity.getUserEmailSnapshot());
+              assertThat(r.getItems())
+                  .zipSatisfy(
+                      entity.getItems(),
+                      (itemResponse, itemEntity) -> {
+                        assertThat(itemResponse.getProductId()).isEqualTo(itemEntity.getProductId());
+                        assertThat(itemResponse.getName()).isEqualTo(itemEntity.getName());
+                        assertThat(itemResponse.getPrice()).isEqualTo(itemEntity.getPrice());
+                      });
             })
-        .usingRecursiveComparison()
-        .ignoringFields("user")
-        .isEqualTo(entity);
+        .satisfies(r -> assertThat(r.getTotal()).isEqualTo(entity.getTotal()));
   }
 
   @Test

@@ -1,5 +1,6 @@
 package it.montano.multipersistencebackend.order.model;
 
+import it.montano.multipersistencebackend.user.model.UserEntity;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -21,23 +22,18 @@ public class OrderEntity {
   @GeneratedValue(strategy = GenerationType.UUID)
   UUID id;
 
-  /**
-   * User data is intentionally denormalized inside the order. We store a snapshot of the user's
-   * information at the time the order is created, instead of referencing UserEntity. This ensures
-   * historical consistency: changes to the user profile do not affect existing orders. Only userId
-   * is kept as a reference, without a relational mapping.
-   */
-  @Column(nullable = false)
-  UUID userId;
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @JoinColumn(name = "user_id", nullable = false)
+  UserEntity user;
 
   @Column(nullable = false, length = 100)
-  String firstName;
+  String userFirstNameSnapshot;
 
   @Column(nullable = false, length = 100)
-  String lastName;
+  String userLastNameSnapshot;
 
   @Column(nullable = false)
-  String email;
+  String userEmailSnapshot;
 
   @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
   List<OrderItemEntity> items = new ArrayList<>();

@@ -13,17 +13,17 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface OrderPostgresRepository extends JpaRepository<OrderEntity, UUID> {
 
-  @EntityGraph(attributePaths = {"items"})
+  @EntityGraph(attributePaths = {"user", "items"})
   @Query("SELECT o FROM OrderEntity o")
   @NonNull
   List<OrderEntity> findAllWithItems();
 
   @Override
-  @EntityGraph(attributePaths = {"items"})
+  @EntityGraph(attributePaths = {"user", "items"})
   @NonNull
   Optional<OrderEntity> findById(@NonNull UUID uuid);
 
-  @EntityGraph(attributePaths = {"items"})
+  @EntityGraph(attributePaths = {"user", "items"})
   @NonNull
   List<OrderEntity> findByUserId(@NonNull UUID userId);
 
@@ -35,15 +35,14 @@ public interface OrderPostgresRepository extends JpaRepository<OrderEntity, UUID
   @Query(
       """
     SELECT new it.montano.multipersistencebackend.dto.TotalSpentPerUserResponse(
-        u.id,
-        u.firstName,
-        u.lastName,
-        u.email,
+        o.user.id,
+        o.user.firstName,
+        o.user.lastName,
+        o.user.email,
         SUM(o.total)
     )
-    FROM OrderEntity o, UserEntity u
-    WHERE o.userId = u.id
-    GROUP BY u.id, u.firstName, u.lastName, u.email
+    FROM OrderEntity o
+    GROUP BY o.user.id, o.user.firstName, o.user.lastName, o.user.email
   """)
   @NonNull
   List<TotalSpentPerUserResponse> getTotalSpentPerUser();
