@@ -89,6 +89,14 @@ This ensures separation between API and persistence models.
 
 ---
 
+## 🔐 Security Scope Note
+
+Authentication and authorization are intentionally out of scope for this thesis implementation.
+
+The project focuses on comparing SQL vs NoSQL persistence design, query behavior, constraints, and performance under the same API contract. Endpoints such as `createOrder` therefore do not enforce an auth layer in this demo baseline.
+
+---
+
 ## ⚡ Caching
 - Caffeine powers `users`, `products`, `orders`, and `orders-by-user` caches, each with tailored TTL and size caps (defined in `CaffeineCacheConfig`).
 - Cache hit/miss/put metrics are exported via Spring Actuator for observability and tuning.
