@@ -34,6 +34,9 @@ public class OrderPostgresService implements OrderService {
   /**
    * Persists a new order in Postgres after enriching items.
    *
+   * <p>Postgres uses a single ACID transaction here. Snapshot enrichment and order persistence run
+   * inside the same transactional boundary.
+   *
    * @param request API order payload
    * @return persisted order response with hydrated user data
    */

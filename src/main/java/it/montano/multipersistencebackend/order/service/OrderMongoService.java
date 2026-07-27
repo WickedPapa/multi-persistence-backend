@@ -33,6 +33,9 @@ public class OrderMongoService implements OrderService {
   /**
    * Creates an order in MongoDB after enriching prices and user info.
    *
+   * <p>In this demo Mongo path we do not use a multi-document transaction boundary. Enrichment and
+   * persistence are executed as regular repository operations.
+   *
    * @param request API order payload
    * @return persisted order response
    */
