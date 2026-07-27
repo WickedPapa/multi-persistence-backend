@@ -61,7 +61,8 @@ public class UserMongoService implements UserService {
   public @NonNull UserResponse getUserById(@NonNull UUID userId) {
     return repo.findById(userId)
         .map(mapper::toResponse)
-        .orElseThrow(() -> new ResourceNotFoundException(userId.toString()));
+        .orElseThrow(
+            () -> new ResourceNotFoundException("User not found with id " + userId));
   }
 
   /**

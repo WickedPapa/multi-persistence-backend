@@ -64,7 +64,8 @@ public class ProductPostgresService implements ProductService {
   public @NonNull ProductResponse getProductById(@NonNull UUID productId) {
     return repo.findById(productId)
         .map(mapper::toResponse)
-        .orElseThrow(() -> new ResourceNotFoundException(productId.toString()));
+        .orElseThrow(
+            () -> new ResourceNotFoundException("Product not found with id " + productId));
   }
 
   /**
@@ -92,7 +93,8 @@ public class ProductPostgresService implements ProductService {
       @NonNull UUID productId, ProductRequest productRequest) {
     ProductEntity entity =
         repo.findById(productId)
-            .orElseThrow(() -> new ResourceNotFoundException(productId.toString()));
+            .orElseThrow(
+                () -> new ResourceNotFoundException("Product not found with id " + productId));
     mapper.updateEntity(productRequest, entity);
     return mapper.toResponse(repo.save(entity));
   }

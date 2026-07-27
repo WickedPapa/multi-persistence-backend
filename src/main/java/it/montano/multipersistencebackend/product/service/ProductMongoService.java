@@ -60,7 +60,8 @@ public class ProductMongoService implements ProductService {
   public @NonNull ProductResponse getProductById(@NonNull UUID productId) {
     return repo.findById(productId)
         .map(mapper::toResponse)
-        .orElseThrow(() -> new ResourceNotFoundException(productId.toString()));
+        .orElseThrow(
+            () -> new ResourceNotFoundException("Product not found with id " + productId));
   }
 
   /**
@@ -86,7 +87,8 @@ public class ProductMongoService implements ProductService {
       @NonNull UUID productId, ProductRequest productRequest) {
     ProductDocument doc =
         repo.findById(productId)
-            .orElseThrow(() -> new ResourceNotFoundException(productId.toString()));
+            .orElseThrow(
+                () -> new ResourceNotFoundException("Product not found with id " + productId));
     mapper.updateDocument(productRequest, doc);
     return mapper.toResponse(repo.save(doc));
   }
