@@ -64,6 +64,9 @@ public class OrderPostgresService implements OrderService {
   @Transactional
   @Override
   public void deleteOrder(@NonNull UUID orderId) {
+    if (!repo.existsById(orderId)) {
+      throw new ResourceNotFoundException("Order not found with id " + orderId);
+    }
     repo.deleteById(orderId);
   }
 

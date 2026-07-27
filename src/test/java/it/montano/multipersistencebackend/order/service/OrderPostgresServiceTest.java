@@ -84,9 +84,21 @@ class OrderPostgresServiceTest {
 
   @Test
   void shouldDeleteOrder(@Given UUID orderId) {
+    when(repo.existsById(orderId)).thenReturn(true);
     doNothing().when(repo).deleteById(orderId);
     service.deleteOrder(orderId);
+    verify(repo).existsById(orderId);
     verify(repo).deleteById(orderId);
+  }
+
+  @Test
+  void shouldThrowWhenDeleteOrderNotFound(@Given UUID orderId) {
+    when(repo.existsById(orderId)).thenReturn(false);
+
+    assertThrows(ResourceNotFoundException.class, () -> service.deleteOrder(orderId));
+
+    verify(repo).existsById(orderId);
+    verify(repo, never()).deleteById(orderId);
   }
 
   @Test

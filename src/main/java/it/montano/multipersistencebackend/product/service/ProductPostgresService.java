@@ -49,6 +49,9 @@ public class ProductPostgresService implements ProductService {
   @Transactional
   @Override
   public void deleteProduct(@NonNull UUID productId) {
+    if (!repo.existsById(productId)) {
+      throw new ResourceNotFoundException("Product not found with id " + productId);
+    }
     repo.deleteById(productId);
   }
 

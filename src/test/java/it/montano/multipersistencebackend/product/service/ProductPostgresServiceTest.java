@@ -45,11 +45,23 @@ class ProductPostgresServiceTest {
 
   @Test
   void shouldDeleteProduct(@Given UUID productId) {
+    when(repo.existsById(productId)).thenReturn(true);
     doNothing().when(repo).deleteById(productId);
 
     service.deleteProduct(productId);
 
+    verify(repo).existsById(productId);
     verify(repo).deleteById(productId);
+  }
+
+  @Test
+  void shouldThrowWhenDeleteProductNotFound(@Given UUID productId) {
+    when(repo.existsById(productId)).thenReturn(false);
+
+    assertThrows(ResourceNotFoundException.class, () -> service.deleteProduct(productId));
+
+    verify(repo).existsById(productId);
+    verify(repo, never()).deleteById(productId);
   }
 
   @Test

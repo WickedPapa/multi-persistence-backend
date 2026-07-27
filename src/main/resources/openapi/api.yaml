@@ -89,6 +89,8 @@ paths:
       responses:
         '204':
           description: User deleted
+        '404':
+          $ref: '#/components/responses/NotFound'
 
   /products:
     get:
@@ -184,6 +186,8 @@ paths:
       responses:
         '204':
           description: Product deleted
+        '404':
+          $ref: '#/components/responses/NotFound'
 
   /orders:
     get:
@@ -254,6 +258,8 @@ paths:
       responses:
         '204':
           description: Order deleted
+        '404':
+          $ref: '#/components/responses/NotFound'
 
   /orders/user/{userId}:
     get:

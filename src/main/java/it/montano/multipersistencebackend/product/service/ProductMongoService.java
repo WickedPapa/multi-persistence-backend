@@ -46,6 +46,9 @@ public class ProductMongoService implements ProductService {
   @CacheEvict(value = "products", key = "#productId")
   @Override
   public void deleteProduct(@NonNull UUID productId) {
+    if (!repo.existsById(productId)) {
+      throw new ResourceNotFoundException("Product not found with id " + productId);
+    }
     repo.deleteById(productId);
   }
 
