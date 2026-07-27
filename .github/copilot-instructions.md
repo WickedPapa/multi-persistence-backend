@@ -25,7 +25,7 @@ Use the Maven wrapper (`./mvnw` on Linux, `mvnw.cmd` on Windows).
 - Single test class: `./mvnw test -Dtest=ProductMapperTest`
 - Single test method: `./mvnw test -Dtest=PostgresTest#contextLoads`
 - Run locally in Docker (starts Postgres, Mongo, pgAdmin, mongo-express, api-server):
-  - PowerShell: `$env:HOME=$env:USERPROFILE; $env:APP_DATASOURCE="postgres"; docker compose up -d --build`
+  - PowerShell: `$env:APP_DATASOURCE="postgres"; docker compose up -d --build`
   - Bash: `APP_DATASOURCE=postgres docker compose up -d --build` (use `mongo` to switch)
 - Newman API tests (app must already be up): `docker compose --profile test-newman run --rm newman`
 - Reset DB volumes: `docker compose down -v`

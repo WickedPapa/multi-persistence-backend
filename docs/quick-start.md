@@ -21,10 +21,10 @@ To start the application, open a terminal in the **root of the project** and run
 
 ### Windows (PowerShell)
 ```bash
-$env:HOME=$env:USERPROFILE; $env:APP_DATASOURCE="postgres"; docker compose up -d --build
+$env:APP_DATASOURCE="postgres"; docker compose up -d --build
 ```
 ```bash
-$env:HOME=$env:USERPROFILE; $env:APP_DATASOURCE="mongo"; docker compose up -d --build
+$env:APP_DATASOURCE="mongo"; docker compose up -d --build
 ```
 
 ### Linux
@@ -70,6 +70,7 @@ Then restart the app
 
 * The application switches database based on `APP_DATASOURCE`
 * No manual configuration required
+* The runtime `api-server` container does not mount `${HOME}/.m2`
 * On PostgreSQL runs, relational schema is managed by Flyway migrations (`src/main/resources/db/migration`)
 * MongoDB schema/index evolution is managed by Mongock (`src/main/java/it/montano/multipersistencebackend/config/mongock`), including collection `$jsonSchema` validators
 * Data is persisted using Docker volumes (removed only with `-v`)
