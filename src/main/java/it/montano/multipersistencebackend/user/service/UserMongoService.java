@@ -45,6 +45,8 @@ public class UserMongoService implements UserService {
   @CacheEvict(value = "users", key = "#userId")
   @Override
   public void deleteUser(@NonNull UUID userId) {
+    // Current demo policy: keep historical orders immutable.
+    // In Mongo, deleting a user does not cascade to orders because data is stored as snapshots.
     repo.deleteById(userId);
   }
 

@@ -48,6 +48,8 @@ public class UserPostgresService implements UserService {
   @Transactional
   @Override
   public void deleteUser(@NonNull UUID userId) {
+    // Current demo policy: keep historical orders immutable.
+    // In Postgres, the FK from orders.user_id can block this delete when related orders exist.
     repo.deleteById(userId);
   }
 
