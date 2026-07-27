@@ -30,3 +30,5 @@ CREATE TABLE IF NOT EXISTS order_items (
     order_id UUID NOT NULL,
     CONSTRAINT fk_order_items_order FOREIGN KEY (order_id) REFERENCES orders (id) ON DELETE CASCADE
 );
+
+CREATE INDEX IF NOT EXISTS idx_orders_user_id ON orders (user_id);

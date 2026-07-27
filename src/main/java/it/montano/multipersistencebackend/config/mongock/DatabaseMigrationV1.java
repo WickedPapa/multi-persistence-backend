@@ -16,7 +16,7 @@ import org.springframework.data.mongodb.core.index.Index;
  * <ul>
  *   <li>{@code users.email} — unique (mirrors the UNIQUE constraint in the SQL schema)
  *   <li>{@code products.name} — unique (mirrors the UNIQUE constraint in the SQL schema)
- *   <li>{@code orders.user._id} — non-unique, supports efficient {@code findByUserId} queries
+ *   <li>{@code orders.user.userId} — non-unique, supports efficient {@code findByUserId} queries
  * </ul>
  *
  * <p>Mongock stores executed changesets in the {@code mongockChangeLog} collection, providing the
@@ -37,7 +37,7 @@ public class DatabaseMigrationV1 {
 
     mongoTemplate
         .indexOps("orders")
-        .createIndex(new Index("user._id", Sort.Direction.ASC).named("orders_user_id_idx"));
+        .createIndex(new Index("user.userId", Sort.Direction.ASC).named("orders_user_id_idx"));
   }
 
   @RollbackExecution
