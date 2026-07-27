@@ -22,7 +22,7 @@ public interface OrderMongoRepository extends MongoRepository<OrderDocument, UUI
       pipeline = {
         "{ $group: { "
             + "_id: '$user.userId', "
-            + "total: { $sum: '$total' }, "
+            + "totalSpent: { $sum: '$total' }, "
             + "firstName: { $first: '$user.firstName' }, "
             + "lastName: { $first: '$user.lastName' }, "
             + "email: { $first: '$user.email' } "
@@ -30,7 +30,7 @@ public interface OrderMongoRepository extends MongoRepository<OrderDocument, UUI
         "{ $project: { "
             + "_id: 0, "
             + "userId: '$_id', "
-            + "totalSpent: '$total', "
+            + "totalSpent: 1, "
             + "firstName: 1, "
             + "lastName: 1, "
             + "email: 1 "
