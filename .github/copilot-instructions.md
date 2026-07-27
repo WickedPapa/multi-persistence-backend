@@ -60,3 +60,4 @@ The core convention that spans multiple files:
 
 - Runtime profile in Docker is `docker` (`SPRING_PROFILES_ACTIVE=docker` → `application-docker.yaml`); local dev uses `application.yaml` with `localhost` hosts.
 - Only `app.datasource` switches persistence — do not add profile-based `@Profile` gates for that concern; use `@ConditionalOnDatasource`.
+- PostgreSQL schema is versioned with Flyway migrations under `src/main/resources/db/migration`; keep JPA `ddl-auto` on `validate` so entity changes require explicit migration updates.

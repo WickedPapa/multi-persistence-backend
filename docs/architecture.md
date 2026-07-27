@@ -16,7 +16,7 @@ The architecture follows a layered pattern:
 Client → Controller → Service → Repository → Database
 
 The system is **database-agnostic** at API and service level.  
-The underlying database is selected at runtime.
+The underlying database is selected at startup.
 
 ---
 
@@ -48,7 +48,7 @@ The database is selected via environment variable:
 - > APP_DATASOURCE=postgres
 - > APP_DATASOURCE=mongo
 
-Spring configuration enables the correct repository implementation at runtime.
+Spring configuration enables the correct repository implementation at startup.
 
 ---
 
