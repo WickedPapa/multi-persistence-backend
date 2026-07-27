@@ -52,6 +52,18 @@ Spring configuration enables the correct repository implementation at startup.
 
 ---
 
+## 🧱 Persistence Migrations
+
+### PostgreSQL
+- Versioned with Flyway SQL migrations (`src/main/resources/db/migration`)
+- JPA schema mode is `validate` to enforce explicit migration updates
+
+### MongoDB
+- Versioned with Mongock ChangeUnits (`src/main/java/it/montano/multipersistencebackend/config/mongock`)
+- In Docker local standalone mode, migrations run with `retryWrites=false` and `mongock.transaction-enabled=false`
+
+---
+
 ## 📊 Data Modeling
 
 ### PostgreSQL (Relational)

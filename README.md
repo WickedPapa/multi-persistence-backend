@@ -53,6 +53,7 @@ The application is designed to start against **one datasource at a time** (`APP_
 - Shared business logic across implementations
 - REST API generated from OpenAPI specification
 - Versioned relational schema migrations with Flyway (PostgreSQL)
+- Versioned MongoDB migrations with Mongock
 - Swagger UI for API exploration
 - Validation with Jakarta Bean Validation
 - Caching with Caffeine
@@ -107,6 +108,7 @@ The application is designed to start against **one datasource at a time** (`APP_
 - Docker & Docker Compose
 - Maven
 - Flyway (PostgreSQL schema migrations)
+- Mongock (MongoDB migrations)
 - Spotless (code formatting)
 - JaCoCo (code coverage)
 

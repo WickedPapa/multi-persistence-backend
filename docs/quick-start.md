@@ -71,7 +71,7 @@ Then restart the app
 * The application switches database based on `APP_DATASOURCE`
 * No manual configuration required
 * On PostgreSQL runs, relational schema is managed by Flyway migrations (`src/main/resources/db/migration`)
-* MongoDB schema/index evolution is currently managed by Spring Data configuration and code-level mappings
+* MongoDB schema/index evolution is managed by Mongock (`src/main/java/it/montano/multipersistencebackend/config/mongock`)
 * Data is persisted using Docker volumes (removed only with `-v`)
 
 ---
