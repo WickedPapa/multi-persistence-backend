@@ -93,7 +93,7 @@ public class ProductPostgresService implements ProductService {
   @Transactional
   @Override
   public @NonNull ProductResponse updateProduct(
-      @NonNull UUID productId, ProductRequest productRequest) {
+      @NonNull UUID productId, @NonNull ProductRequest productRequest) {
     ProductEntity entity =
         repo.findById(productId)
             .orElseThrow(

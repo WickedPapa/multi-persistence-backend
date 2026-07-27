@@ -49,5 +49,5 @@ public interface ProductService {
    * @return updated product response
    */
   @NonNull
-  ProductResponse updateProduct(@NonNull UUID productId, ProductRequest productRequest);
+  ProductResponse updateProduct(@NonNull UUID productId, @NonNull ProductRequest productRequest);
 }

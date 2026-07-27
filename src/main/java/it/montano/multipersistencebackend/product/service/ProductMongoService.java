@@ -87,7 +87,7 @@ public class ProductMongoService implements ProductService {
   @CachePut(value = "products", key = "#productId")
   @Override
   public @NonNull ProductResponse updateProduct(
-      @NonNull UUID productId, ProductRequest productRequest) {
+      @NonNull UUID productId, @NonNull ProductRequest productRequest) {
     ProductDocument doc =
         repo.findById(productId)
             .orElseThrow(
