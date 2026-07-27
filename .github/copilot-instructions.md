@@ -44,8 +44,8 @@ The core convention that spans multiple files:
 
 ## Testing conventions
 
-- All integration tests extend `AbstractIntegrationTest` (`src/test/java/.../AbstractIntegrationTest.java`), which spins up Postgres 15 and Mongo 7 Testcontainers and rewrites `spring.datasource.*` / `spring.data.mongodb.uri` via `@DynamicPropertySource`. **Docker must be running** for these to pass.
-- To pick the backend under test, set the property via `@SpringBootTest(properties = { AbstractIntegrationTest.PROPERTY_KEY_EQUALS + Datasources.POSTGRES })` (see `PostgresTest`, `MongoTest`). Add a new sibling test rather than parameterising.
+- Integration tests use backend-specific bases: `AbstractPostgresIntegrationTest` and `AbstractMongoIntegrationTest` (`src/test/java/...`). Each one starts only the required Testcontainer and rewrites the relevant connection properties via `@DynamicPropertySource`. **Docker must be running** for these to pass.
+- To pick the backend under test, set the property via `@SpringBootTest(properties = { AbstractPostgresIntegrationTest.PROPERTY_KEY_EQUALS + Datasources.POSTGRES })` or `AbstractMongoIntegrationTest.PROPERTY_KEY_EQUALS + Datasources.MONGO` (see `PostgresTest`, `MongoTest`). Add a new sibling test rather than parameterising.
 - Test data uses **Instancio** (`instancio-junit`) — not Mockito fixtures — and assertions use **AssertJ**.
 - Coverage exclusions (see `pom.xml` JaCoCo config): `Application*`, `api/**`, `**/dto/**`, `**/config/**`, `**/model/**`, `**/repository/**`, `**/*MapperImpl*`. Focus new tests on `service/`, `controller/`, `common/mapper/`, `common/util/`.
 
