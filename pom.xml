@@ -24,6 +24,7 @@
 		<spotless.version>3.3.0</spotless.version>
 		<springdoc.version>2.8.7</springdoc.version>
 		<mongock.version>5.4.4</mongock.version>
+		<instancio.version>5.6.0</instancio.version>
 	</properties>
 
 	<dependencies>
@@ -154,7 +155,7 @@
 		<dependency>
 			<groupId>org.instancio</groupId>
 			<artifactId>instancio-junit</artifactId>
-			<version>6.0.0-RC2</version>
+			<version>${instancio.version}</version>
 			<scope>test</scope>
 		</dependency>
 
