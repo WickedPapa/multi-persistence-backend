@@ -81,6 +81,7 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: docker
       APP_DATASOURCE: ${APP_DATASOURCE:-postgres}
+      TZ: Europe/Rome
     depends_on:
       postgres:
         condition: service_healthy
@@ -88,6 +89,7 @@ services:
         condition: service_healthy
     volumes:
       - ${HOME}/.m2:/root/.m2
+      - ./logs:/app/logs
     healthcheck:
       test: 'curl -f http://localhost:8080/actuator/health -H "Connection: close" || exit 1'
       interval: 5s
