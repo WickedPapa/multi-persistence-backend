@@ -58,12 +58,12 @@ public interface OrderMapper {
   OrderItemResponse toResponse(OrderItemEmbedded orderItem);
 
   @Mapping(target = "id", expression = "java(UUID.randomUUID())")
-  @Mapping(target = "user.userId", source = "userResponse.id")
-  @Mapping(target = "user.firstName", source = "userResponse.firstName")
-  @Mapping(target = "user.lastName", source = "userResponse.lastName")
-  @Mapping(target = "user.email", source = "userResponse.email")
+  @Mapping(target = "user.userId", source = "userId")
+  @Mapping(target = "user.firstName", source = "firstName")
+  @Mapping(target = "user.lastName", source = "lastName")
+  @Mapping(target = "user.email", source = "email")
   @Mapping(target = "total", expression = "java(calculateTotal(request.getItems()))")
-  OrderDocument toDocument(OrderRequestDto request, UserResponse userResponse);
+  OrderDocument toDocument(OrderRequestDto request);
 
   @Mapping(target = "productEmbedded.productId", source = "productId")
   @Mapping(target = "productEmbedded.name", source = "name")

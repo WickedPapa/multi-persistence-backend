@@ -67,9 +67,7 @@ public class GlobalExceptionHandler {
    * @param request HTTP request context
    * @return 409 error payload
    */
-  @ExceptionHandler({
-    org.springframework.dao.DataIntegrityViolationException.class
-  })
+  @ExceptionHandler({org.springframework.dao.DataIntegrityViolationException.class})
   public ResponseEntity<ErrorResponse> handleDuplicate(Exception ex, HttpServletRequest request) {
 
     logException(request, ex, 409);

@@ -97,8 +97,8 @@ class OrderMapperTest {
   }
 
   @Test
-  void shouldMapToDocument(@Given OrderRequestDto request, @Given UserResponse userResponse) {
-    OrderDocument document = mapper.toDocument(request, userResponse);
+  void shouldMapToDocument(@Given OrderRequestDto request) {
+    OrderDocument document = mapper.toDocument(request);
 
     assertThat(document)
         .isNotNull()
@@ -114,10 +114,10 @@ class OrderMapperTest {
                         assertThat(r.getProductEmbedded().getPrice()).isEqualTo(d.getPrice());
                       });
               assertThat(res.getId()).isNotNull();
-              assertThat(res.getUser().getUserId()).isEqualTo(userResponse.getId());
-              assertThat(res.getUser().getFirstName()).isEqualTo(userResponse.getFirstName());
-              assertThat(res.getUser().getLastName()).isEqualTo(userResponse.getLastName());
-              assertThat(res.getUser().getEmail()).isEqualTo(userResponse.getEmail());
+              assertThat(res.getUser().getUserId()).isEqualTo(request.getUserId());
+              assertThat(res.getUser().getFirstName()).isEqualTo(request.getFirstName());
+              assertThat(res.getUser().getLastName()).isEqualTo(request.getLastName());
+              assertThat(res.getUser().getEmail()).isEqualTo(request.getEmail());
               assertThat(res.getTotal()).isEqualTo(mapper.calculateTotal(request.getItems()));
             });
   }

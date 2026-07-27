@@ -41,10 +41,10 @@ public class OrderPostgresService implements OrderService {
   @Transactional
   @Override
   public @NonNull OrderResponse createOrder(@NonNull OrderRequest request) {
-    OrderRequestDto orderItemRequestDto = mapper.toDto(request);
-    enrichOrderWithUser(orderItemRequestDto);
-    enrichOrderItems(orderItemRequestDto);
-    OrderEntity saved = repo.save(mapper.toEntity(orderItemRequestDto));
+    OrderRequestDto orderRequestDto = mapper.toDto(request);
+    enrichOrderWithUser(orderRequestDto);
+    enrichOrderItems(orderRequestDto);
+    OrderEntity saved = repo.save(mapper.toEntity(orderRequestDto));
     return mapper.toResponse(saved);
   }
 
@@ -126,6 +126,9 @@ public class OrderPostgresService implements OrderService {
   }
 
   private void enrichOrderWithUser(@NonNull OrderRequestDto request) {
+    // Demo assumption: writes happen only through this app, so cached reads are acceptable here.
+    // If external tools update DB data, order snapshots could be stale and cache should be
+    // bypassed.
     UserResponse response = userService.getUserById(request.getUserId());
     request.setFirstName(response.getFirstName());
     request.setLastName(response.getLastName());
@@ -137,6 +140,7 @@ public class OrderPostgresService implements OrderService {
   }
 
   private void fillItem(@NonNull OrderItemRequestDto orderItemRequestDto) {
+    // Same assumption as above for product snapshots used during order creation.
     ProductResponse product = productService.getProductById(orderItemRequestDto.getProductId());
     orderItemRequestDto.setName(product.getName());
     orderItemRequestDto.setPrice(product.getPrice());

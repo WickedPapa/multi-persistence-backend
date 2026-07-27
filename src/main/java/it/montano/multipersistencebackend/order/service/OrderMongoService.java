@@ -39,12 +39,10 @@ public class OrderMongoService implements OrderService {
   @CacheEvict(value = "orders-by-user", key = "#request.userId")
   @Override
   public @NonNull OrderResponse createOrder(@NonNull OrderRequest request) {
-    OrderRequestDto orderItemRequestDto = mapper.toDto(request);
-    enrichOrderItems(orderItemRequestDto);
-    OrderDocument saved =
-        repo.save(
-            mapper.toDocument(
-                orderItemRequestDto, userService.getUserById(orderItemRequestDto.getUserId())));
+    OrderRequestDto orderRequestDto = mapper.toDto(request);
+    enrichOrderWithUser(orderRequestDto);
+    enrichOrderItems(orderRequestDto);
+    OrderDocument saved = repo.save(mapper.toDocument(orderRequestDto));
     return mapper.toResponse(saved);
   }
 
@@ -119,11 +117,22 @@ public class OrderMongoService implements OrderService {
     return repo.getTotalSpentPerUser();
   }
 
-  private void enrichOrderItems(@NonNull OrderRequestDto orderRequestDto) {
-    orderRequestDto.getItems().forEach(this::fillItemPrice);
+  private void enrichOrderWithUser(@NonNull OrderRequestDto request) {
+    // Demo assumption: writes happen only through this app, so cached reads are acceptable here.
+    // If external tools update DB data, order snapshots could be stale and cache should be
+    // bypassed.
+    UserResponse response = userService.getUserById(request.getUserId());
+    request.setFirstName(response.getFirstName());
+    request.setLastName(response.getLastName());
+    request.setEmail(response.getEmail());
   }
 
-  private void fillItemPrice(@NonNull OrderItemRequestDto orderItemRequestDto) {
+  private void enrichOrderItems(@NonNull OrderRequestDto orderRequestDto) {
+    orderRequestDto.getItems().forEach(this::fillItem);
+  }
+
+  private void fillItem(@NonNull OrderItemRequestDto orderItemRequestDto) {
+    // Same assumption as above for product snapshots used during order creation.
     ProductResponse productResponse =
         productService.getProductById(orderItemRequestDto.getProductId());
     orderItemRequestDto.setPrice(productResponse.getPrice());
