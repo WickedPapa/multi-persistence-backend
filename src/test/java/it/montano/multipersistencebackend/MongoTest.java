@@ -14,8 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 
-@SpringBootTest(properties = {AbstractIntegrationTest.PROPERTY_KEY_EQUALS + Datasources.MONGO})
-class MongoTest extends AbstractIntegrationTest {
+@SpringBootTest(properties = {AbstractMongoIntegrationTest.PROPERTY_KEY_EQUALS + Datasources.MONGO})
+class MongoTest extends AbstractMongoIntegrationTest {
 
   @Autowired ApplicationContext context;
 
