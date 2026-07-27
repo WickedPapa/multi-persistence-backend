@@ -51,6 +51,10 @@ public interface OrderPostgresRepository extends JpaRepository<OrderEntity, UUID
   /**
    * Returns products ordered by the quantity sold.
    *
+   * <p>For this demo, Postgres resolves product metadata through a join with current
+   * {@code ProductEntity} rows. If a product is removed from the catalog, historical quantities
+   * linked to that product are not returned by this query.
+   *
    * @return products with cumulative quantities
    */
   @Query(

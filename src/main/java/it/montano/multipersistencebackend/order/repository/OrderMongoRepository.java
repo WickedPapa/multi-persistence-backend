@@ -42,6 +42,10 @@ public interface OrderMongoRepository extends MongoRepository<OrderDocument, UUI
   /**
    * Aggregates the most sold product with total quantity.
    *
+   * <p>For this demo, MongoDB reads product metadata from embedded order snapshots. If a product is
+   * later removed or renamed in the catalog, historical stats still use the snapshot data stored in
+   * each order document.
+   *
    * @return ordered list of products by quantity sold
    */
   @Aggregation(
