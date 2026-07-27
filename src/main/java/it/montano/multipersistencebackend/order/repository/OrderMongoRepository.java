@@ -47,7 +47,7 @@ public interface OrderMongoRepository extends MongoRepository<OrderDocument, UUI
   @Aggregation(
       pipeline = {
         "{ $unwind: '$items' }",
-        "{ $group: { _id: '$items.productEmbedded._id', name: { $first: '$items.productEmbedded.name' }, totalQuantity: { $sum: '$items.quantity' } } }",
+        "{ $group: { _id: '$items.productEmbedded.productId', name: { $first: '$items.productEmbedded.name' }, totalQuantity: { $sum: '$items.quantity' } } }",
         "{ $sort: { totalQuantity: -1 } }",
         "{ $project: { _id: 0, productId: '$_id', name: 1, totalQuantity: 1 } }"
       })
