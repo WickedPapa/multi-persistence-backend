@@ -6,7 +6,7 @@ import static org.mockito.Mockito.*;
 
 import it.montano.multipersistencebackend.common.mapper.OrderMapper;
 import it.montano.multipersistencebackend.config.ConfiguredTest;
-import it.montano.multipersistencebackend.config.exeption.ResourceNotFoundException;
+import it.montano.multipersistencebackend.config.exception.ResourceNotFoundException;
 import it.montano.multipersistencebackend.dto.*;
 import it.montano.multipersistencebackend.order.model.OrderEntity;
 import it.montano.multipersistencebackend.order.repository.OrderPostgresRepository;

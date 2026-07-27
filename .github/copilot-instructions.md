@@ -40,7 +40,7 @@ The core convention that spans multiple files:
 - Persistence models are duplicated per backend: `XxxEntity` (JPA, `model/`) and `XxxDocument` (Mongo, `model/`). Repositories mirror this split: `XxxPostgresRepository` (JpaRepository) and `XxxMongoRepository` (MongoRepository). Mappers in `common/mapper/` convert both sides to/from the shared generated DTOs.
 - REST DTOs and controller interfaces are **generated** by `openapi-generator-maven-plugin` from `src/main/resources/openapi/api.yaml` into packages `it.montano.multipersistencebackend.api` (interfaces) and `...dto` (models). Never hand-edit these; change `api.yaml` and rebuild. Note the plugin's `typeMappings` remaps OpenAPI `Double` → `java.math.BigDecimal`.
 - Cross-cutting: AOP aspects in `config/logging/` add an MDC `requestId` to every REST call and log cache hit/miss/put/evict. Caffeine caches (`users`, `products`, `orders`, `orders-by-user`) are configured in `config/cache/CaffeineCacheConfig` with per-cache TTL/size.
-- Global error format is produced by the handler in `config/exeption/` (note the misspelling — keep the package name as-is).
+- Global error format is produced by the handler in `config/exception/`.
 
 ## Testing conventions
 
