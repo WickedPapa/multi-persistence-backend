@@ -21,7 +21,7 @@
     </appender>
 
     <logger name="org.springframework" level="INFO"/>
-    <logger name="it.montano.multipersistencebackend.logging" level="INFO"/>
+    <logger name="it.montano.multipersistencebackend.config.logging" level="INFO"/>
 
     <root level="INFO">
         <appender-ref ref="CONSOLE"/>
