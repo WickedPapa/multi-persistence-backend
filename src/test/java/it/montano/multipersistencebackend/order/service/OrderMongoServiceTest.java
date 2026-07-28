@@ -87,6 +87,25 @@ class OrderMongoServiceTest {
   }
 
   @Test
+  void shouldDeleteOrderNoCache(
+      @Given UUID orderId, @Given UUID userId, @Given OrderDocument order) {
+    UserEmbedded user = new UserEmbedded();
+    user.setUserId(userId);
+    order.setUser(user);
+
+    when(repo.findById(orderId)).thenReturn(Optional.of(order));
+    when(cacheManager.getCache("orders")).thenReturn(null);
+    when(cacheManager.getCache("orders-by-user")).thenReturn(null);
+
+    service.deleteOrder(orderId);
+
+    verify(repo).findById(orderId);
+    verify(repo).deleteById(orderId);
+    verify(ordersCache, never()).evict(orderId);
+    verify(ordersByUserCache, never()).evict(userId);
+  }
+
+  @Test
   void shouldDeleteOrder(@Given UUID orderId, @Given UUID userId, @Given OrderDocument order) {
     UserEmbedded user = new UserEmbedded();
     user.setUserId(userId);
