@@ -1,6 +1,7 @@
 package it.montano.multipersistencebackend;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.instancio.Select.field;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -29,7 +30,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
-import static org.instancio.Select.field;
 
 @SpringBootTest(properties = {AbstractMongoIntegrationTest.PROPERTY_KEY_EQUALS + Datasources.MONGO})
 @AutoConfigureMockMvc
@@ -123,7 +123,8 @@ class MongoOrderStatsE2ETest extends AbstractMongoIntegrationTest {
     assertThat(mostSoldProducts).hasSize(2);
     assertThat(mostSoldProducts.get(0).getTotalQuantity())
         .isGreaterThanOrEqualTo(mostSoldProducts.get(1).getTotalQuantity());
-    assertThat(mostSoldByName.get(firstProduct.getName()).getProductId()).isEqualTo(firstProduct.getId());
+    assertThat(mostSoldByName.get(firstProduct.getName()).getProductId())
+        .isEqualTo(firstProduct.getId());
     assertThat(mostSoldByName.get(firstProduct.getName()).getTotalQuantity()).isEqualTo(3L);
     assertThat(mostSoldByName.get(secondProduct.getName()).getProductId())
         .isEqualTo(secondProduct.getId());
@@ -137,7 +138,8 @@ class MongoOrderStatsE2ETest extends AbstractMongoIntegrationTest {
     assertThat(totalsByUserId.get(firstUser.getId()).getFirstName()).isEqualTo("Alice");
     assertThat(totalsByUserId.get(firstUser.getId()).getTotalSpent()).isEqualByComparingTo("35.00");
     assertThat(totalsByUserId.get(secondUser.getId()).getFirstName()).isEqualTo("Bob");
-    assertThat(totalsByUserId.get(secondUser.getId()).getTotalSpent()).isEqualByComparingTo("20.00");
+    assertThat(totalsByUserId.get(secondUser.getId()).getTotalSpent())
+        .isEqualByComparingTo("20.00");
   }
 
   private UserResponse createUser(UserRequest request) throws Exception {
