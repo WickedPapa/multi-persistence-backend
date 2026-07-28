@@ -41,27 +41,31 @@ public class DatasourceAutoConfigurationExcluder implements EnvironmentPostProce
       ConfigurableEnvironment environment, SpringApplication application) {
     String datasource = environment.getProperty(Datasources.PROPERTY_KEY);
 
-    if (!Datasources.ALLOWED_DATASOURCES.contains(datasource)) {
-      throw new IllegalStateException(
-          String.format(
-              "Missing or invalid %s: '%s'. Allowed values: %s",
-              Datasources.PROPERTY_KEY,
-              datasource,
-              Arrays.toString(Datasources.ALLOWED_DATASOURCES.toArray())));
-    }
-
     Map<String, Object> properties = new HashMap<>();
 
-    if (Datasources.MONGO.equals(datasource)) {
-      properties.put("spring.autoconfigure.exclude", POSTGRES_AUTOCONFIGURATIONS);
-      properties.put("mongock.enabled", "true");
-    } else {
-      properties.put("spring.autoconfigure.exclude", MONGO_AUTOCONFIGURATIONS);
-      properties.put("mongock.enabled", "false");
+    switch (datasource) {
+      case Datasources.MONGO -> {
+        properties.put("spring.autoconfigure.exclude", POSTGRES_AUTOCONFIGURATIONS);
+        properties.put("mongock.enabled", "true");
+      }
+      case Datasources.POSTGRES -> {
+        properties.put("spring.autoconfigure.exclude", MONGO_AUTOCONFIGURATIONS);
+        properties.put("mongock.enabled", "false");
+      }
+      case null, default -> throw invalidDatasourceException(datasource);
     }
 
     environment
         .getPropertySources()
         .addFirst(new MapPropertySource("datasourceAutoConfigExclusions", properties));
+  }
+
+  private static IllegalStateException invalidDatasourceException(String datasource) {
+    return new IllegalStateException(
+        String.format(
+            "Missing or invalid %s: '%s'. Allowed values: %s",
+            Datasources.PROPERTY_KEY,
+            datasource,
+            Arrays.toString(Datasources.ALLOWED_DATASOURCES.toArray())));
   }
 }
