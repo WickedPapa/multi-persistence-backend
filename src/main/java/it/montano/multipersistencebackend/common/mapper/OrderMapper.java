@@ -20,10 +20,10 @@ import org.mapstruct.MappingTarget;
 @Mapper(imports = {UUID.class})
 public interface OrderMapper {
 
-  @Mapping(target = "user.userId", source = "userId")
-  @Mapping(target = "user.firstName", source = "firstName")
-  @Mapping(target = "user.lastName", source = "lastName")
-  @Mapping(target = "user.email", source = "email")
+  @Mapping(target = "user.userId", source = "user.id")
+  @Mapping(target = "user.firstName", source = "userFirstNameSnapshot")
+  @Mapping(target = "user.lastName", source = "userLastNameSnapshot")
+  @Mapping(target = "user.email", source = "userEmailSnapshot")
   OrderResponse toResponse(OrderEntity entity);
 
   OrderItemResponse toResponse(OrderItemEntity entity);
@@ -38,6 +38,10 @@ public interface OrderMapper {
   OrderItemRequestDto toDto(OrderItemRequest request);
 
   @Mapping(target = "id", ignore = true)
+  @Mapping(target = "user.id", source = "userId")
+  @Mapping(target = "userFirstNameSnapshot", source = "firstName")
+  @Mapping(target = "userLastNameSnapshot", source = "lastName")
+  @Mapping(target = "userEmailSnapshot", source = "email")
   @Mapping(target = "total", expression = "java(calculateTotal(request.getItems()))")
   OrderEntity toEntity(OrderRequestDto request);
 
@@ -58,12 +62,12 @@ public interface OrderMapper {
   OrderItemResponse toResponse(OrderItemEmbedded orderItem);
 
   @Mapping(target = "id", expression = "java(UUID.randomUUID())")
-  @Mapping(target = "user.userId", source = "userResponse.id")
-  @Mapping(target = "user.firstName", source = "userResponse.firstName")
-  @Mapping(target = "user.lastName", source = "userResponse.lastName")
-  @Mapping(target = "user.email", source = "userResponse.email")
+  @Mapping(target = "user.userId", source = "userId")
+  @Mapping(target = "user.firstName", source = "firstName")
+  @Mapping(target = "user.lastName", source = "lastName")
+  @Mapping(target = "user.email", source = "email")
   @Mapping(target = "total", expression = "java(calculateTotal(request.getItems()))")
-  OrderDocument toDocument(OrderRequestDto request, UserResponse userResponse);
+  OrderDocument toDocument(OrderRequestDto request);
 
   @Mapping(target = "productEmbedded.productId", source = "productId")
   @Mapping(target = "productEmbedded.name", source = "name")

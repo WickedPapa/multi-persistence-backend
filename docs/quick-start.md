@@ -12,6 +12,14 @@ Install Docker Desktop (includes Docker Compose):
 
 ---
 
+## ⚙️ Credentials
+
+Credentials are defined in `.env` at the project root and injected into `compose.yaml` via `${VAR}` references (no inline defaults — if `.env` is missing, Compose fails explicitly).
+
+> **⚠️ Demo/thesis note** — `.env` is committed here intentionally to make the demo self-contained. In a production project `.env` must be git-ignored and secrets injected via CI/CD or a secrets manager.
+
+---
+
 ## ▶️ How to run the application
 
 To start the application, open a terminal in the **root of the project** and run **one of the following commands**, choosing based on:
@@ -19,22 +27,34 @@ To start the application, open a terminal in the **root of the project** and run
 - your operating system: **Linux** or **Windows**
 - the datasource: **🐘 PostgreSQL (relational)** or **🍃 MongoDB (NoSQL)**
 
-### Windows (PowerShell)
+### Linux or Windows (PowerShell)
 ```bash
-$env:HOME=$env:USERPROFILE; $env:APP_DATASOURCE="postgres"; docker compose up -d --build
+docker compose -f compose.base.yaml -f compose.postgres.yaml up -d --build
 ```
 ```bash
-$env:HOME=$env:USERPROFILE; $env:APP_DATASOURCE="mongo"; docker compose up -d --build
+docker compose -f compose.base.yaml -f compose.mongo.yaml up -d --build
+```
+
+## Startup scripts
+
+To avoid long commands, use the dedicated root scripts:
+
+### Windows (PowerShell)
+```powershell
+./run-app-postgres.ps1   # PostgreSQL stack
+./run-app-mongo.ps1      # MongoDB stack
 ```
 
 ### Linux
+(First time, if needed: `chmod +x ./run-app-postgres.sh ./run-app-mongo.sh`)
 ```bash
-APP_DATASOURCE="postgres" docker compose up -d --build
+./run-app-postgres.sh    # PostgreSQL stack
+./run-app-mongo.sh       # MongoDB stack
 ```
 
-```bash
-APP_DATASOURCE="mongo" docker compose up -d --build
-```
+Each script runs the standard stack by default. To switch to debug mode (port 5005), comment the normal line and uncomment the debug variant inside the script.
+
+---
 
 ## 🧪 Run API tests (automatic)
 
@@ -43,8 +63,12 @@ APP_DATASOURCE="mongo" docker compose up -d --build
 
 You can run all API tests (including minimal automatic data setup) using Newman via Docker with the following command:
 ```bash
-docker compose --profile test-newman run --rm newman
+docker compose -f compose.base.yaml --profile test-newman run --rm newman
 ```
+
+or use the run-tests.sh or run-tests.ps1 script.
+
+See [Startup scripts section](#startup-scripts) above for details.
 
 ---
 
@@ -58,18 +82,21 @@ Once the application is up and running, all services (API, UIs, and monitoring e
 
 ## 🔄 Reset databases
 
-```bash
-docker compose down -v
-```
+Use the run-compose-down.sh or run-compose-down.ps1 script.
 
-Then restart the app
+Then restart the app.
+
+See [Startup scripts section](#startup-scripts) above for details.
 
 ---
 
 ## 🧠 Notes
 
-* The application switches database based on `APP_DATASOURCE`
+* The selected compose override sets the datasource automatically (`compose.postgres.yaml` -> Postgres, `compose.mongo.yaml` -> Mongo) over shared `compose.base.yaml`
 * No manual configuration required
+* The runtime `api-server` container does not mount `${HOME}/.m2`
+* On PostgreSQL runs, relational schema is managed by Flyway migrations (`src/main/resources/db/migration`)
+* MongoDB schema/index evolution is managed by Mongock (`src/main/java/it/montano/multipersistencebackend/config/mongock`), including collection `$jsonSchema` validators
 * Data is persisted using Docker volumes (removed only with `-v`)
 
 ---

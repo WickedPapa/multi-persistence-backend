@@ -9,6 +9,7 @@ import it.montano.multipersistencebackend.config.ConfiguredTest;
 import it.montano.multipersistencebackend.config.exception.ResourceNotFoundException;
 import it.montano.multipersistencebackend.dto.*;
 import it.montano.multipersistencebackend.order.model.OrderDocument;
+import it.montano.multipersistencebackend.order.model.UserEmbedded;
 import it.montano.multipersistencebackend.order.repository.OrderMongoRepository;
 import it.montano.multipersistencebackend.product.service.ProductService;
 import it.montano.multipersistencebackend.user.service.UserService;
@@ -23,6 +24,8 @@ import org.mapstruct.factory.Mappers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 
 @ConfiguredTest
 class OrderMongoServiceTest {
@@ -32,6 +35,9 @@ class OrderMongoServiceTest {
   @Mock UserService userService;
   @Mock ProductService productService;
   @Mock OrderMongoRepository repo;
+  @Mock CacheManager cacheManager;
+  @Mock Cache ordersCache;
+  @Mock Cache ordersByUserCache;
 
   @Spy OrderMapper mapper = Mappers.getMapper(OrderMapper.class);
 
@@ -81,9 +87,32 @@ class OrderMongoServiceTest {
   }
 
   @Test
-  void shouldDeleteOrder(@Given UUID orderId) {
+  void shouldDeleteOrder(@Given UUID orderId, @Given UUID userId, @Given OrderDocument order) {
+    UserEmbedded user = new UserEmbedded();
+    user.setUserId(userId);
+    order.setUser(user);
+
+    when(repo.findById(orderId)).thenReturn(Optional.of(order));
+    when(cacheManager.getCache("orders")).thenReturn(ordersCache);
+    when(cacheManager.getCache("orders-by-user")).thenReturn(ordersByUserCache);
+
     service.deleteOrder(orderId);
+
+    verify(repo).findById(orderId);
     verify(repo).deleteById(orderId);
+    verify(ordersCache).evict(orderId);
+    verify(ordersByUserCache).evict(userId);
+  }
+
+  @Test
+  void shouldThrowWhenDeleteOrderNotFound(@Given UUID orderId) {
+    when(repo.findById(orderId)).thenReturn(Optional.empty());
+
+    assertThrows(ResourceNotFoundException.class, () -> service.deleteOrder(orderId));
+
+    verify(repo).findById(orderId);
+    verify(repo, never()).deleteById(orderId);
+    verifyNoInteractions(cacheManager, ordersCache, ordersByUserCache);
   }
 
   @Test

@@ -22,7 +22,7 @@ public interface OrderMongoRepository extends MongoRepository<OrderDocument, UUI
       pipeline = {
         "{ $group: { "
             + "_id: '$user.userId', "
-            + "total: { $sum: '$total' }, "
+            + "totalSpent: { $sum: '$total' }, "
             + "firstName: { $first: '$user.firstName' }, "
             + "lastName: { $first: '$user.lastName' }, "
             + "email: { $first: '$user.email' } "
@@ -30,7 +30,7 @@ public interface OrderMongoRepository extends MongoRepository<OrderDocument, UUI
         "{ $project: { "
             + "_id: 0, "
             + "userId: '$_id', "
-            + "totalSpent: '$total', "
+            + "totalSpent: 1, "
             + "firstName: 1, "
             + "lastName: 1, "
             + "email: 1 "
@@ -42,12 +42,16 @@ public interface OrderMongoRepository extends MongoRepository<OrderDocument, UUI
   /**
    * Aggregates the most sold product with total quantity.
    *
+   * <p>For this demo, MongoDB reads product metadata from embedded order snapshots. If a product is
+   * later removed or renamed in the catalog, historical stats still use the snapshot data stored in
+   * each order document.
+   *
    * @return ordered list of products by quantity sold
    */
   @Aggregation(
       pipeline = {
         "{ $unwind: '$items' }",
-        "{ $group: { _id: '$items.productEmbedded._id', name: { $first: '$items.productEmbedded.name' }, totalQuantity: { $sum: '$items.quantity' } } }",
+        "{ $group: { _id: '$items.productEmbedded.productId', name: { $first: '$items.productEmbedded.name' }, totalQuantity: { $sum: '$items.quantity' } } }",
         "{ $sort: { totalQuantity: -1 } }",
         "{ $project: { _id: 0, productId: '$_id', name: 1, totalQuantity: 1 } }"
       })

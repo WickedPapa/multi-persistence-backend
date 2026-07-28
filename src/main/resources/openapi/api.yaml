@@ -15,8 +15,6 @@ tags:
     description: Product management APIs
   - name: Orders
     description: Order management APIs
-  - name: Order Items
-    description: APIs for managing order items
   - name: Stats
     description: Aggregation and reporting APIs
 
@@ -89,6 +87,8 @@ paths:
       responses:
         '204':
           description: User deleted
+        '404':
+          $ref: '#/components/responses/NotFound'
 
   /products:
     get:
@@ -184,6 +184,8 @@ paths:
       responses:
         '204':
           description: Product deleted
+        '404':
+          $ref: '#/components/responses/NotFound'
 
   /orders:
     get:
@@ -224,7 +226,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
         '409':
-          $ref: '#/components/responses/InternalServerError'
+          $ref: '#/components/responses/Conflict'
 
   /orders/{orderId}:
     get:
@@ -254,6 +256,8 @@ paths:
       responses:
         '204':
           description: Order deleted
+        '404':
+          $ref: '#/components/responses/NotFound'
 
   /orders/user/{userId}:
     get:
@@ -332,15 +336,6 @@ components:
       in: path
       required: true
       description: Order identifier
-      schema:
-        type: string
-        format: uuid
-
-    ItemId:
-      name: itemId
-      in: path
-      required: true
-      description: Order item identifier
       schema:
         type: string
         format: uuid

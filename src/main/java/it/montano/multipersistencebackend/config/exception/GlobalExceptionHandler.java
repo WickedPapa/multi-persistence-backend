@@ -4,6 +4,7 @@ import it.montano.multipersistencebackend.dto.ErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import java.time.OffsetDateTime;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -23,8 +24,9 @@ public class GlobalExceptionHandler {
   @ExceptionHandler(MethodArgumentNotValidException.class)
   public ResponseEntity<ErrorResponse> handleValidationErrors(
       MethodArgumentNotValidException ex, HttpServletRequest request) {
+    HttpStatus status = HttpStatus.BAD_REQUEST;
 
-    logException(request, ex, 400);
+    logException(request, ex, status.value());
 
     var errors =
         ex.getBindingResult().getFieldErrors().stream()
@@ -34,8 +36,8 @@ public class GlobalExceptionHandler {
     return ResponseEntity.badRequest()
         .body(
             new ErrorResponse(
-                400,
-                "Bad Request",
+                status.value(),
+                status.getReasonPhrase(),
                 String.join(", ", errors),
                 request.getRequestURI(),
                 OffsetDateTime.now()));
@@ -51,13 +53,18 @@ public class GlobalExceptionHandler {
   @ExceptionHandler(ResourceNotFoundException.class)
   public ResponseEntity<ErrorResponse> handleNotFound(
       ResourceNotFoundException ex, HttpServletRequest request) {
+    HttpStatus status = HttpStatus.NOT_FOUND;
 
-    logException(request, ex, 404);
+    logException(request, ex, status.value());
 
-    return ResponseEntity.status(404)
+    return ResponseEntity.status(status)
         .body(
             new ErrorResponse(
-                404, "Not Found", ex.getMessage(), request.getRequestURI(), OffsetDateTime.now()));
+                status.value(),
+                status.getReasonPhrase(),
+                ex.getMessage(),
+                request.getRequestURI(),
+                OffsetDateTime.now()));
   }
 
   /**
@@ -67,19 +74,17 @@ public class GlobalExceptionHandler {
    * @param request HTTP request context
    * @return 409 error payload
    */
-  @ExceptionHandler({
-    org.springframework.dao.DataIntegrityViolationException.class,
-    com.mongodb.DuplicateKeyException.class
-  })
+  @ExceptionHandler({org.springframework.dao.DataIntegrityViolationException.class})
   public ResponseEntity<ErrorResponse> handleDuplicate(Exception ex, HttpServletRequest request) {
+    HttpStatus status = HttpStatus.CONFLICT;
 
-    logException(request, ex, 409);
+    logException(request, ex, status.value());
 
-    return ResponseEntity.status(409)
+    return ResponseEntity.status(status)
         .body(
             new ErrorResponse(
-                409,
-                "Conflict",
+                status.value(),
+                status.getReasonPhrase(),
                 "Resource already exists",
                 request.getRequestURI(),
                 OffsetDateTime.now()));
@@ -94,14 +99,15 @@ public class GlobalExceptionHandler {
    */
   @ExceptionHandler(Exception.class)
   public ResponseEntity<ErrorResponse> handleGeneric(Exception ex, HttpServletRequest request) {
+    HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
 
-    logException(request, ex, 500);
+    logException(request, ex, status.value());
 
-    return ResponseEntity.status(500)
+    return ResponseEntity.status(status)
         .body(
             new ErrorResponse(
-                500,
-                "Internal Server Error",
+                status.value(),
+                status.getReasonPhrase(),
                 ex.getMessage(),
                 request.getRequestURI(),
                 OffsetDateTime.now()));

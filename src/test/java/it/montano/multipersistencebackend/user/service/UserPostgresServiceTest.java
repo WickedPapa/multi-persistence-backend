@@ -41,11 +41,23 @@ class UserPostgresServiceTest {
 
   @Test
   void shouldDeleteUser(@Given UUID userId) {
+    when(repo.existsById(userId)).thenReturn(true);
     doNothing().when(repo).deleteById(userId);
 
     service.deleteUser(userId);
 
+    verify(repo).existsById(userId);
     verify(repo).deleteById(userId);
+  }
+
+  @Test
+  void shouldThrowWhenDeleteUserNotFound(@Given UUID userId) {
+    when(repo.existsById(userId)).thenReturn(false);
+
+    assertThrows(ResourceNotFoundException.class, () -> service.deleteUser(userId));
+
+    verify(repo).existsById(userId);
+    verify(repo, never()).deleteById(userId);
   }
 
   @Test

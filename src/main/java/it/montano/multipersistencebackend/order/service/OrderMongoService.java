@@ -15,9 +15,9 @@ import java.util.List;
 import java.util.UUID;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -29,9 +29,13 @@ public class OrderMongoService implements OrderService {
   private final ProductService productService;
   private final OrderMongoRepository repo;
   private final OrderMapper mapper;
+  private final CacheManager cacheManager;
 
   /**
    * Creates an order in MongoDB after enriching prices and user info.
+   *
+   * <p>In this demo Mongo path we do not use a multi-document transaction boundary. Enrichment and
+   * persistence are executed as regular repository operations.
    *
    * @param request API order payload
    * @return persisted order response
@@ -39,12 +43,10 @@ public class OrderMongoService implements OrderService {
   @CacheEvict(value = "orders-by-user", key = "#request.userId")
   @Override
   public @NonNull OrderResponse createOrder(@NonNull OrderRequest request) {
-    OrderRequestDto orderItemRequestDto = mapper.toDto(request);
-    enrichOrderItems(orderItemRequestDto);
-    OrderDocument saved =
-        repo.save(
-            mapper.toDocument(
-                orderItemRequestDto, userService.getUserById(orderItemRequestDto.getUserId())));
+    OrderRequestDto orderRequestDto = mapper.toDto(request);
+    enrichOrderWithUser(orderRequestDto);
+    enrichOrderItems(orderRequestDto);
+    OrderDocument saved = repo.save(mapper.toDocument(orderRequestDto));
     return mapper.toResponse(saved);
   }
 
@@ -53,14 +55,16 @@ public class OrderMongoService implements OrderService {
    *
    * @param orderId identifier of the order to delete
    */
-  @Caching(
-      evict = {
-        @CacheEvict(value = "orders-by-user", allEntries = true),
-        @CacheEvict(value = "orders", key = "#orderId")
-      })
   @Override
   public void deleteOrder(@NonNull UUID orderId) {
+    OrderDocument order =
+        repo.findById(orderId)
+            .orElseThrow(() -> new ResourceNotFoundException("Order not found with id " + orderId));
+    UUID userId = order.getUser().getUserId();
+
     repo.deleteById(orderId);
+    evictCache("orders", orderId);
+    evictCache("orders-by-user", userId);
   }
 
   /**
@@ -84,7 +88,7 @@ public class OrderMongoService implements OrderService {
   public @NonNull OrderResponse getOrderById(@NonNull UUID orderId) {
     return repo.findById(orderId)
         .map(mapper::toResponse)
-        .orElseThrow(() -> new ResourceNotFoundException(orderId.toString()));
+        .orElseThrow(() -> new ResourceNotFoundException("Order not found with id " + orderId));
   }
 
   /**
@@ -119,14 +123,32 @@ public class OrderMongoService implements OrderService {
     return repo.getTotalSpentPerUser();
   }
 
-  private void enrichOrderItems(@NonNull OrderRequestDto orderRequestDto) {
-    orderRequestDto.getItems().forEach(this::fillItemPrice);
+  private void enrichOrderWithUser(@NonNull OrderRequestDto request) {
+    // Demo assumption: writes happen only through this app, so cached reads are acceptable here.
+    // If external tools update DB data, order snapshots could be stale and cache should be
+    // bypassed.
+    UserResponse response = userService.getUserById(request.getUserId());
+    request.setFirstName(response.getFirstName());
+    request.setLastName(response.getLastName());
+    request.setEmail(response.getEmail());
   }
 
-  private void fillItemPrice(@NonNull OrderItemRequestDto orderItemRequestDto) {
+  private void enrichOrderItems(@NonNull OrderRequestDto orderRequestDto) {
+    orderRequestDto.getItems().forEach(this::fillItem);
+  }
+
+  private void fillItem(@NonNull OrderItemRequestDto orderItemRequestDto) {
+    // Same assumption as above for product snapshots used during order creation.
     ProductResponse productResponse =
         productService.getProductById(orderItemRequestDto.getProductId());
     orderItemRequestDto.setPrice(productResponse.getPrice());
     orderItemRequestDto.setName(productResponse.getName());
+  }
+
+  private void evictCache(@NonNull String cacheName, @NonNull Object key) {
+    var cache = cacheManager.getCache(cacheName);
+    if (cache != null) {
+      cache.evict(key);
+    }
   }
 }

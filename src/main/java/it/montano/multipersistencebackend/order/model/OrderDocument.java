@@ -8,6 +8,8 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.data.mongodb.core.mapping.FieldType;
 
 @Document(collection = "orders")
 @Getter
@@ -20,5 +22,7 @@ public class OrderDocument {
   @Id UUID id;
   UserEmbedded user;
   List<OrderItemEmbedded> items = new ArrayList<>();
+
+  @Field(targetType = FieldType.DECIMAL128)
   BigDecimal total;
 }

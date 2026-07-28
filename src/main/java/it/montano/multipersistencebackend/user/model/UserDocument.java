@@ -4,7 +4,6 @@ import java.util.UUID;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "users")
@@ -17,7 +16,5 @@ public class UserDocument {
   @Id UUID id;
   String firstName;
   String lastName;
-
-  @Indexed(unique = true)
   String email;
 }

@@ -48,6 +48,11 @@ public class UserPostgresService implements UserService {
   @Transactional
   @Override
   public void deleteUser(@NonNull UUID userId) {
+    if (!repo.existsById(userId)) {
+      throw new ResourceNotFoundException("User not found with id " + userId);
+    }
+    // Current demo policy: keep historical orders immutable.
+    // In Postgres, the FK from orders.user_id can block this delete when related orders exist.
     repo.deleteById(userId);
   }
 
@@ -63,7 +68,7 @@ public class UserPostgresService implements UserService {
   public @NonNull UserResponse getUserById(@NonNull UUID userId) {
     return repo.findById(userId)
         .map(mapper::toResponse)
-        .orElseThrow(() -> new ResourceNotFoundException(userId.toString()));
+        .orElseThrow(() -> new ResourceNotFoundException("User not found with id " + userId));
   }
 
   /**

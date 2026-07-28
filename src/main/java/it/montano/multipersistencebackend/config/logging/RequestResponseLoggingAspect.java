@@ -21,6 +21,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 @Aspect
 @Component
 public class RequestResponseLoggingAspect {
+  private static final String REQUEST_ID_HEADER = "X-Request-Id";
 
   /**
    * Wraps REST controllers to log inbound requests and outbound responses.
@@ -46,6 +47,7 @@ public class RequestResponseLoggingAspect {
     String requestId = UUID.randomUUID().toString();
     long start = System.nanoTime();
 
+    attachRequestIdHeader(response, requestId);
     MDC.put("requestId", requestId);
     log.info(
         "Request intercepted:\n--------------------------------------------\nINCOMING REQUEST:\nrequestId = {}\nmethod = {}\nuri = {}\nhandler = {}\nclient = {}\nuserAgent = {}\n--------------------------------------------",
@@ -108,5 +110,11 @@ public class RequestResponseLoggingAspect {
       return ip.split(",")[0].trim();
     }
     return request.getRemoteAddr();
+  }
+
+  private void attachRequestIdHeader(HttpServletResponse response, String requestId) {
+    if (response != null) {
+      response.setHeader(REQUEST_ID_HEADER, requestId);
+    }
   }
 }

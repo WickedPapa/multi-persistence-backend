@@ -6,6 +6,11 @@ target/
 multi-persistence-backend.log
 multi-persistence-backend.*.log
 
+# .env is committed for thesis/demo purposes only.
+# In a production project this file must be git-ignored and never committed.
+# Uncomment the line below to follow production best practices:
+# .env
+
 
 ### STS ###
 .apt_generated

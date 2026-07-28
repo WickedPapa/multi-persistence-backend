@@ -30,6 +30,7 @@ public interface ProductMapper {
   void updateEntity(ProductRequest request, @MappingTarget ProductEntity entity);
 
   @Mapping(target = "id", ignore = true)
+  @Mapping(target = "price", expression = "java(roundPrice(productRequest.getPrice()))")
   void updateDocument(ProductRequest productRequest, @MappingTarget ProductDocument doc);
 
   default BigDecimal roundPrice(BigDecimal price) {

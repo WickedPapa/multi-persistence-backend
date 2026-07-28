@@ -46,6 +46,9 @@ public class ProductMongoService implements ProductService {
   @CacheEvict(value = "products", key = "#productId")
   @Override
   public void deleteProduct(@NonNull UUID productId) {
+    if (!repo.existsById(productId)) {
+      throw new ResourceNotFoundException("Product not found with id " + productId);
+    }
     repo.deleteById(productId);
   }
 
@@ -60,7 +63,7 @@ public class ProductMongoService implements ProductService {
   public @NonNull ProductResponse getProductById(@NonNull UUID productId) {
     return repo.findById(productId)
         .map(mapper::toResponse)
-        .orElseThrow(() -> new ResourceNotFoundException(productId.toString()));
+        .orElseThrow(() -> new ResourceNotFoundException("Product not found with id " + productId));
   }
 
   /**
@@ -83,10 +86,11 @@ public class ProductMongoService implements ProductService {
   @CachePut(value = "products", key = "#productId")
   @Override
   public @NonNull ProductResponse updateProduct(
-      @NonNull UUID productId, ProductRequest productRequest) {
+      @NonNull UUID productId, @NonNull ProductRequest productRequest) {
     ProductDocument doc =
         repo.findById(productId)
-            .orElseThrow(() -> new ResourceNotFoundException(productId.toString()));
+            .orElseThrow(
+                () -> new ResourceNotFoundException("Product not found with id " + productId));
     mapper.updateDocument(productRequest, doc);
     return mapper.toResponse(repo.save(doc));
   }

@@ -15,9 +15,9 @@ import java.util.List;
 import java.util.UUID;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,9 +30,13 @@ public class OrderPostgresService implements OrderService {
   private final ProductService productService;
   private final OrderPostgresRepository repo;
   private final OrderMapper mapper;
+  private final CacheManager cacheManager;
 
   /**
    * Persists a new order in Postgres after enriching items.
+   *
+   * <p>Postgres uses a single ACID transaction here. Snapshot enrichment and order persistence run
+   * inside the same transactional boundary.
    *
    * @param request API order payload
    * @return persisted order response with hydrated user data
@@ -41,10 +45,10 @@ public class OrderPostgresService implements OrderService {
   @Transactional
   @Override
   public @NonNull OrderResponse createOrder(@NonNull OrderRequest request) {
-    OrderRequestDto orderItemRequestDto = mapper.toDto(request);
-    enrichOrderWithUser(orderItemRequestDto);
-    enrichOrderItems(orderItemRequestDto);
-    OrderEntity saved = repo.save(mapper.toEntity(orderItemRequestDto));
+    OrderRequestDto orderRequestDto = mapper.toDto(request);
+    enrichOrderWithUser(orderRequestDto);
+    enrichOrderItems(orderRequestDto);
+    OrderEntity saved = repo.save(mapper.toEntity(orderRequestDto));
     return mapper.toResponse(saved);
   }
 
@@ -53,15 +57,17 @@ public class OrderPostgresService implements OrderService {
    *
    * @param orderId identifier of the order to delete
    */
-  @Caching(
-      evict = {
-        @CacheEvict(value = "orders-by-user", allEntries = true),
-        @CacheEvict(value = "orders", key = "#orderId")
-      })
   @Transactional
   @Override
   public void deleteOrder(@NonNull UUID orderId) {
+    OrderEntity order =
+        repo.findById(orderId)
+            .orElseThrow(() -> new ResourceNotFoundException("Order not found with id " + orderId));
+    UUID userId = order.getUser().getId();
+
     repo.deleteById(orderId);
+    evictCache("orders", orderId);
+    evictCache("orders-by-user", userId);
   }
 
   /**
@@ -87,7 +93,7 @@ public class OrderPostgresService implements OrderService {
   public @NonNull OrderResponse getOrderById(@NonNull UUID orderId) {
     return repo.findById(orderId)
         .map(mapper::toResponse)
-        .orElseThrow(() -> new ResourceNotFoundException(orderId.toString()));
+        .orElseThrow(() -> new ResourceNotFoundException("Order not found with id " + orderId));
   }
 
   /**
@@ -126,6 +132,9 @@ public class OrderPostgresService implements OrderService {
   }
 
   private void enrichOrderWithUser(@NonNull OrderRequestDto request) {
+    // Demo assumption: writes happen only through this app, so cached reads are acceptable here.
+    // If external tools update DB data, order snapshots could be stale and cache should be
+    // bypassed.
     UserResponse response = userService.getUserById(request.getUserId());
     request.setFirstName(response.getFirstName());
     request.setLastName(response.getLastName());
@@ -137,8 +146,16 @@ public class OrderPostgresService implements OrderService {
   }
 
   private void fillItem(@NonNull OrderItemRequestDto orderItemRequestDto) {
+    // Same assumption as above for product snapshots used during order creation.
     ProductResponse product = productService.getProductById(orderItemRequestDto.getProductId());
     orderItemRequestDto.setName(product.getName());
     orderItemRequestDto.setPrice(product.getPrice());
+  }
+
+  private void evictCache(@NonNull String cacheName, @NonNull Object key) {
+    var cache = cacheManager.getCache(cacheName);
+    if (cache != null) {
+      cache.evict(key);
+    }
   }
 }

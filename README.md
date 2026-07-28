@@ -28,7 +28,7 @@ The goal is to compare **relational (SQL)** and **NoSQL** database paradigms by 
 - PostgreSQL (relational model via JPA/Hibernate)
 - MongoDB (document model via Spring Data MongoDB)
 
-The application is designed to **dynamically switch between the two databases** using a configuration property, enabling a direct comparison of:
+The application is designed to start against **one datasource at a time** (`APP_DATASOURCE=postgres` or `APP_DATASOURCE=mongo`), enabling a direct comparison of:
 
 - data modeling approaches
 - query strategies
@@ -49,9 +49,11 @@ The application is designed to **dynamically switch between the two databases** 
 ## 🧩 Key Features
 
 - Dual database support (PostgreSQL / MongoDB)
-- Runtime switch via configuration property (`app.datasource`)
+- Datasource selection at startup via configuration property (`app.datasource`)
 - Shared business logic across implementations
 - REST API generated from OpenAPI specification
+- Versioned relational schema migrations with Flyway (PostgreSQL)
+- Versioned MongoDB migrations with Mongock
 - Swagger UI for API exploration
 - Validation with Jakarta Bean Validation
 - Caching with Caffeine
@@ -105,6 +107,8 @@ The application is designed to **dynamically switch between the two databases** 
 ### DevOps & Tooling
 - Docker & Docker Compose
 - Maven
+- Flyway (PostgreSQL schema migrations)
+- Mongock (MongoDB migrations)
 - Spotless (code formatting)
 - JaCoCo (code coverage)
 
@@ -120,3 +124,10 @@ Part of this project's documentation and JavaDoc comments were generated with th
 All generated content has been reviewed and refined to ensure correctness, clarity, and alignment with the intended design and implementation.
 
 ---
+
+## 📄 License
+
+This project is licensed under the [MIT License](LICENSE).
+
+---
+

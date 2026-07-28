@@ -22,7 +22,9 @@
 		<mapstruct.version>1.6.3</mapstruct.version>
 		<lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
 		<spotless.version>3.3.0</spotless.version>
-		<springdoc.version>2.8.6</springdoc.version>
+		<springdoc.version>2.8.7</springdoc.version>
+		<mongock.version>5.4.4</mongock.version>
+		<instancio.version>5.6.0</instancio.version>
 	</properties>
 
 	<dependencies>
@@ -39,6 +41,14 @@
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-database-postgresql</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 			<scope>runtime</scope>
@@ -48,6 +58,16 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-mongodb</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.mongock</groupId>
+			<artifactId>mongock-springboot-v3</artifactId>
+			<version>${mongock.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.mongock</groupId>
+			<artifactId>mongodb-springdata-v4-driver</artifactId>
+			<version>${mongock.version}</version>
 		</dependency>
 
 		<!-- Validation -->
@@ -135,7 +155,7 @@
 		<dependency>
 			<groupId>org.instancio</groupId>
 			<artifactId>instancio-junit</artifactId>
-			<version>6.0.0-RC2</version>
+			<version>${instancio.version}</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -217,7 +237,7 @@
 				<configuration>
 					<java>
 						<googleJavaFormat>
-							<version>1.17.0</version>
+								<version>1.19.2</version>
 						</googleJavaFormat>
 					</java>
 				</configuration>
