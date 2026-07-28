@@ -37,20 +37,22 @@ docker compose -f compose.base.yaml -f compose.mongo.yaml up -d --build
 
 ## Startup scripts
 
-To avoid long commands, use the root scripts:
+To avoid long commands, use the dedicated root scripts:
 
 ### Windows (PowerShell)
-```bash
-./run-app.ps1
+```powershell
+./run-app-postgres.ps1   # PostgreSQL stack
+./run-app-mongo.ps1      # MongoDB stack
 ```
 
 ### Linux
-(First time, if needed, run `chmod +x ./run-app.sh`)
+(First time, if needed: `chmod +x ./run-app-postgres.sh ./run-app-mongo.sh`)
 ```bash
-./run-app.sh
+./run-app-postgres.sh    # PostgreSQL stack
+./run-app-mongo.sh       # MongoDB stack
 ```
 
-The scripts contain commented commands for Postgres/Mongo and debug mode. Uncomment the one you need.
+Each script runs the standard stack by default. To switch to debug mode (port 5005), comment the normal line and uncomment the debug variant inside the script.
 
 ---
 
