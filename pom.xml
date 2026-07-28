@@ -16,6 +16,29 @@
 	<artifactId>multi-persistence-backend</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>multi-persistence-backend</name>
+	<description>Reference backend for the thesis "Database relazionali e NoSQL: progettazione e confronto attraverso l'implementazione di un sistema backend", comparing PostgreSQL and MongoDB under the same Spring Boot API contract.</description>
+	<url>https://github.com/WickedPapa/multi-persistence-backend</url>
+
+	<licenses>
+		<license>
+			<name>MIT License</name>
+			<url>https://opensource.org/licenses/MIT</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<developers>
+		<developer>
+			<name>Paolo Montano</name>
+			<url>https://github.com/WickedPapa</url>
+		</developer>
+	</developers>
+
+	<scm>
+		<url>https://github.com/WickedPapa/multi-persistence-backend</url>
+		<connection>scm:git:https://github.com/WickedPapa/multi-persistence-backend.git</connection>
+		<developerConnection>scm:git:ssh://git@github.com/WickedPapa/multi-persistence-backend.git</developerConnection>
+	</scm>
 
 	<properties>
 		<java.version>21</java.version>
@@ -25,6 +48,7 @@
 		<springdoc.version>2.8.7</springdoc.version>
 		<mongock.version>5.4.4</mongock.version>
 		<instancio.version>5.6.0</instancio.version>
+		<testcontainers.version>1.20.1</testcontainers.version>
 	</properties>
 
 	<dependencies>
@@ -136,19 +160,21 @@
 		<dependency>
 			<groupId>org.testcontainers</groupId>
 			<artifactId>junit-jupiter</artifactId>
-			<version>1.19.8</version>
+			<version>${testcontainers.version}</version>
 			<scope>test</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.testcontainers</groupId>
 			<artifactId>postgresql</artifactId>
+			<version>${testcontainers.version}</version>
 			<scope>test</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.testcontainers</groupId>
 			<artifactId>mongodb</artifactId>
+			<version>${testcontainers.version}</version>
 			<scope>test</scope>
 		</dependency>
 
