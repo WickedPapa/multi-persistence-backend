@@ -124,3 +124,10 @@ Part of this project's documentation and JavaDoc comments were generated with th
 All generated content has been reviewed and refined to ensure correctness, clarity, and alignment with the intended design and implementation.
 
 ---
+
+## 📄 License
+
+This project is licensed under the [MIT License](LICENSE).
+
+---
+
