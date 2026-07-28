@@ -29,8 +29,8 @@ Use the Maven wrapper (`./mvnw` on Linux, `mvnw.cmd` on Windows).
   - Bash: `docker compose -f compose.base.yaml -f compose.postgres.yaml up -d --build` (use `-f compose.mongo.yaml` to switch)
 - Add pgAdmin + mongo-express: already included in the selected override (`compose.postgres.yaml` or `compose.mongo.yaml`)
 - Newman API tests (app must already be up): `docker compose -f compose.base.yaml -f compose.postgres.yaml --profile test-newman run --rm newman (or docker compose -f compose.base.yaml -f compose.mongo.yaml --profile test-newman run --rm newman)`
-- Reset DB volumes: `docker compose down -v`
-- Shortcut scripts: use `start-app.ps1` (Windows) and `start-app.sh` (Linux) for postgres/mongo and debug startup (debug exposes port 5005).
+- Reset DB volumes: use `run-compose-down.ps1` (Windows) or `run-compose-down.sh` (Linux) — they pass all `-f` override flags; bare `docker compose down -v` won't work without them since there is no default `compose.yaml`.
+- Shortcut scripts: use `run-app.ps1` (Windows) and `run-app.sh` (Linux) for postgres/mongo and debug startup (debug exposes port 5005). Use `run-tests.ps1`/`run-tests.sh` for Newman API tests.
 
 ## Architecture: dual-persistence pattern
 

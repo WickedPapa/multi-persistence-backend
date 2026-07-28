@@ -41,13 +41,13 @@ To avoid long commands, use the root scripts:
 
 ### Windows (PowerShell)
 ```bash
-./start-app.ps1
+./run-app.ps1
 ```
 
 ### Linux
-(First time, if needed, run `chmod +x ./start-app.sh`)
+(First time, if needed, run `chmod +x ./run-app.sh`)
 ```bash
-./start-app.sh
+./run-app.sh
 ```
 
 The scripts contain commented commands for Postgres/Mongo and debug mode. Uncomment the one you need.
