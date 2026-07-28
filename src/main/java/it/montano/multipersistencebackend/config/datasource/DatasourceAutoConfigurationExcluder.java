@@ -13,12 +13,11 @@ import org.springframework.core.env.MapPropertySource;
  * Excludes irrelevant persistence autoconfiguration based on the selected datasource.
  *
  * <p>Runs before the Spring application context is created, so the JPA/Flyway stack is never
- * initialised when {@code app.datasource=mongo}, and the MongoDB stack is never initialised when
- * {@code app.datasource=postgres}. This makes the two backends cleanly independent: the application
- * fails fast if the selected database is unavailable without touching the other one.
+ * initialized when {@code app.datasource=mongo}, and the MongoDB stack is never initialized when
+ * {@code app.datasource=postgres}. This makes the two backends cleanly independent and fails fast
+ * for invalid datasource values.
  *
- * <p>Registered via {@code
- * META-INF/spring/org.springframework.boot.env.EnvironmentPostProcessor.imports}.
+ * <p>Registered via {@code META-INF/spring.factories}.
  */
 public class DatasourceAutoConfigurationExcluder implements EnvironmentPostProcessor {
 
@@ -42,8 +41,6 @@ public class DatasourceAutoConfigurationExcluder implements EnvironmentPostProce
       ConfigurableEnvironment environment, SpringApplication application) {
     String datasource = environment.getProperty(Datasources.PROPERTY_KEY);
 
-    Map<String, Object> properties = new HashMap<>();
-
     if (!Datasources.ALLOWED_DATASOURCES.contains(datasource)) {
       throw new IllegalStateException(
           String.format(
@@ -52,6 +49,8 @@ public class DatasourceAutoConfigurationExcluder implements EnvironmentPostProce
               datasource,
               Arrays.toString(Datasources.ALLOWED_DATASOURCES.toArray())));
     }
+
+    Map<String, Object> properties = new HashMap<>();
 
     if (Datasources.MONGO.equals(datasource)) {
       properties.put("spring.autoconfigure.exclude", POSTGRES_AUTOCONFIGURATIONS);

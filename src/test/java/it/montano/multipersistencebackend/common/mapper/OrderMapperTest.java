@@ -21,8 +21,7 @@ class OrderMapperTest {
   OrderMapper mapper = Mappers.getMapper(OrderMapper.class);
 
   @Test
-  void shouldMapRequestToDto(
-      @Given OrderRequest orderRequest, @Given OrderItemRequest orderItemRequest) {
+  void shouldMapRequestToDto(@Given OrderRequest orderRequest) {
     OrderRequestDto dto = mapper.toDto(orderRequest);
 
     assertThat(dto)
@@ -105,17 +104,16 @@ class OrderMapperTest {
     assertThat(response)
         .isNotNull()
         .satisfies(
-            res -> {
-              assertThat(res.getItems())
-                  .zipSatisfy(
-                      document.getItems(),
-                      (r, d) -> {
-                        assertThat(r.getProductId())
-                            .isEqualTo(d.getProductEmbedded().getProductId());
-                        assertThat(r.getName()).isEqualTo(d.getProductEmbedded().getName());
-                        assertThat(r.getPrice()).isEqualTo(d.getProductEmbedded().getPrice());
-                      });
-            })
+            res ->
+                assertThat(res.getItems())
+                    .zipSatisfy(
+                        document.getItems(),
+                        (r, d) -> {
+                          assertThat(r.getProductId())
+                              .isEqualTo(d.getProductEmbedded().getProductId());
+                          assertThat(r.getName()).isEqualTo(d.getProductEmbedded().getName());
+                          assertThat(r.getPrice()).isEqualTo(d.getProductEmbedded().getPrice());
+                        }))
         .usingRecursiveComparison()
         .ignoringFields("items.productId", "items.name", "items.price")
         .isEqualTo(document);
