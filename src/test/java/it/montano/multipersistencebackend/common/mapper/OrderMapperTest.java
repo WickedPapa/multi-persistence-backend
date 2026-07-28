@@ -89,7 +89,8 @@ class OrderMapperTest {
                   .zipSatisfy(
                       entity.getItems(),
                       (itemResponse, itemEntity) -> {
-                        assertThat(itemResponse.getProductId()).isEqualTo(itemEntity.getProductId());
+                        assertThat(itemResponse.getProductId())
+                            .isEqualTo(itemEntity.getProductId());
                         assertThat(itemResponse.getName()).isEqualTo(itemEntity.getName());
                         assertThat(itemResponse.getPrice()).isEqualTo(itemEntity.getPrice());
                       });

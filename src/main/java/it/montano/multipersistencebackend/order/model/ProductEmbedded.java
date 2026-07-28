@@ -15,6 +15,7 @@ import org.springframework.data.mongodb.core.mapping.FieldType;
 public class ProductEmbedded {
   UUID productId;
   String name;
+
   @Field(targetType = FieldType.DECIMAL128)
   BigDecimal price;
 }

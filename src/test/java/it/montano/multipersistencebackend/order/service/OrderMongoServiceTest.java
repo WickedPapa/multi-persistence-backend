@@ -21,11 +21,11 @@ import java.util.UUID;
 import org.instancio.junit.Given;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
-import org.springframework.cache.Cache;
-import org.springframework.cache.CacheManager;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 
 @ConfiguredTest
 class OrderMongoServiceTest {

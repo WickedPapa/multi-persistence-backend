@@ -22,6 +22,7 @@ public class OrderDocument {
   @Id UUID id;
   UserEmbedded user;
   List<OrderItemEmbedded> items = new ArrayList<>();
+
   @Field(targetType = FieldType.DECIMAL128)
   BigDecimal total;
 }

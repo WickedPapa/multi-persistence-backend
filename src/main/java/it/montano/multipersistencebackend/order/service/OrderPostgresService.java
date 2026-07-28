@@ -62,8 +62,7 @@ public class OrderPostgresService implements OrderService {
   public void deleteOrder(@NonNull UUID orderId) {
     OrderEntity order =
         repo.findById(orderId)
-            .orElseThrow(
-                () -> new ResourceNotFoundException("Order not found with id " + orderId));
+            .orElseThrow(() -> new ResourceNotFoundException("Order not found with id " + orderId));
     UUID userId = order.getUser().getId();
 
     repo.deleteById(orderId);
@@ -94,8 +93,7 @@ public class OrderPostgresService implements OrderService {
   public @NonNull OrderResponse getOrderById(@NonNull UUID orderId) {
     return repo.findById(orderId)
         .map(mapper::toResponse)
-        .orElseThrow(
-            () -> new ResourceNotFoundException("Order not found with id " + orderId));
+        .orElseThrow(() -> new ResourceNotFoundException("Order not found with id " + orderId));
   }
 
   /**

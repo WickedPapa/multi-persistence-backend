@@ -7,4 +7,4 @@ spring:
 
   data:
     mongodb:
-      uri: mongodb://mongo-admin:${credentials.mongo.password}@mongo:27017/multi_persistence_backend_mongo_db?authSource=admin&retryWrites=false
+      uri: mongodb://${MONGO_ROOT_USERNAME}:${MONGO_ROOT_PASSWORD}@mongo:27017/multi_persistence_backend_mongo_db?authSource=admin&retryWrites=false

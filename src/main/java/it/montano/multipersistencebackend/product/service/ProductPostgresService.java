@@ -67,8 +67,7 @@ public class ProductPostgresService implements ProductService {
   public @NonNull ProductResponse getProductById(@NonNull UUID productId) {
     return repo.findById(productId)
         .map(mapper::toResponse)
-        .orElseThrow(
-            () -> new ResourceNotFoundException("Product not found with id " + productId));
+        .orElseThrow(() -> new ResourceNotFoundException("Product not found with id " + productId));
   }
 
   /**

@@ -59,8 +59,7 @@ public class OrderMongoService implements OrderService {
   public void deleteOrder(@NonNull UUID orderId) {
     OrderDocument order =
         repo.findById(orderId)
-            .orElseThrow(
-                () -> new ResourceNotFoundException("Order not found with id " + orderId));
+            .orElseThrow(() -> new ResourceNotFoundException("Order not found with id " + orderId));
     UUID userId = order.getUser().getUserId();
 
     repo.deleteById(orderId);
@@ -89,8 +88,7 @@ public class OrderMongoService implements OrderService {
   public @NonNull OrderResponse getOrderById(@NonNull UUID orderId) {
     return repo.findById(orderId)
         .map(mapper::toResponse)
-        .orElseThrow(
-            () -> new ResourceNotFoundException("Order not found with id " + orderId));
+        .orElseThrow(() -> new ResourceNotFoundException("Order not found with id " + orderId));
   }
 
   /**

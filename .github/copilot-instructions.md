@@ -24,11 +24,13 @@ Use the Maven wrapper (`./mvnw` on Linux, `mvnw.cmd` on Windows).
 - Format only: `./mvnw spotless:apply` (Google Java Format via Spotless is bound to the build; CI-safe check is `spotless:check`)
 - Single test class: `./mvnw test -Dtest=ProductMapperTest`
 - Single test method: `./mvnw test -Dtest=PostgresTest#contextLoads`
-- Run locally in Docker (starts Postgres, Mongo, pgAdmin, mongo-express, api-server):
-  - PowerShell: `$env:APP_DATASOURCE="postgres"; docker compose up -d --build`
-  - Bash: `APP_DATASOURCE=postgres docker compose up -d --build` (use `mongo` to switch)
-- Newman API tests (app must already be up): `docker compose --profile test-newman run --rm newman`
+- Run locally in Docker - start only the relevant DB via compose override:
+  - PowerShell: `docker compose -f compose.base.yaml -f compose.postgres.yaml up -d --build`
+  - Bash: `docker compose -f compose.base.yaml -f compose.postgres.yaml up -d --build` (use `-f compose.mongo.yaml` to switch)
+- Add pgAdmin + mongo-express: already included in the selected override (`compose.postgres.yaml` or `compose.mongo.yaml`)
+- Newman API tests (app must already be up): `docker compose -f compose.base.yaml -f compose.postgres.yaml --profile test-newman run --rm newman (or docker compose -f compose.base.yaml -f compose.mongo.yaml --profile test-newman run --rm newman)`
 - Reset DB volumes: `docker compose down -v`
+- Shortcut scripts: use `start-app.ps1` (Windows) and `start-app.sh` (Linux) for postgres/mongo and debug startup (debug exposes port 5005).
 
 ## Architecture: dual-persistence pattern
 

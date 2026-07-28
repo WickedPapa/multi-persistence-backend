@@ -54,7 +54,8 @@ final class OpenApiContractSupport {
     }
   }
 
-  private static Set<String> readOperationsFromRuntime(RequestMappingHandlerMapping handlerMapping) {
+  private static Set<String> readOperationsFromRuntime(
+      RequestMappingHandlerMapping handlerMapping) {
     Set<String> operations = new LinkedHashSet<>();
     Set<String> specPaths = readPathsFromSpec();
 

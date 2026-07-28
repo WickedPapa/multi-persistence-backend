@@ -1,18 +1,11 @@
-credentials:
-  postgres:
-    username: postgres-admin
-    password: postgres-psw
-  mongo:
-    password: mongo-psw
-
 app:
-  datasource: ${APP_DATASOURCE:postgres}
+  datasource: ${APP_DATASOURCE}
 
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/multi_persistence_backend_postgres_db
-    username: ${credentials.postgres.username}
-    password: ${credentials.postgres.password}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
 
   jpa:
     hibernate:
@@ -21,7 +14,7 @@ spring:
 
   data:
     mongodb:
-      uri: mongodb://mongo-admin:${credentials.mongo.password}@localhost:27017/multi_persistence_backend_mongo_db?authSource=admin&retryWrites=false
+      uri: mongodb://${MONGO_ROOT_USERNAME}:${MONGO_ROOT_PASSWORD}@localhost:27017/multi_persistence_backend_mongo_db?authSource=admin&retryWrites=false
       uuid-representation: standard
 
 management:
