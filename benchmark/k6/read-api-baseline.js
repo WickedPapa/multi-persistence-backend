@@ -21,7 +21,7 @@ const endpoints = [
   "/orders/stats/total-spent-per-user",
 ];
 
-export default function () {
+export default function readApiBaseline() {
   for (const endpoint of endpoints) {
     const response = http.get(`${baseUrl}${endpoint}`);
     check(response, {
