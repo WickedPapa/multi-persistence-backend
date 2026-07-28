@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  build:
+    name: Build, Format Check & Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: "21"
+          distribution: temurin
+          cache: maven
+
+      - name: Check code formatting (Spotless)
+        run: ./mvnw spotless:check -B
+
+      - name: Build and run tests
+        run: ./mvnw verify -B
+        env:
+          # Testcontainers uses the Docker daemon available on ubuntu-latest runners.
+          # APP_DATASOURCE is overridden per test via @DynamicPropertySource — no value needed here.
+          TESTCONTAINERS_RYUK_DISABLED: "false"
+
+      - name: Upload JaCoCo coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-report
+          path: target/site/jacoco/
+          retention-days: 14
