@@ -71,6 +71,7 @@ The application is designed to start against **one datasource at a time** (`APP_
 - 👉 [Quick Start](docs/quick-start.md) → Step-by-step guide to run the application locally with Docker
 - 👉 [Architecture](docs/architecture.md) → Overview of the system design, components, and the comparison between SQL and NoSQL approaches
 - 👉 [Services](docs/services.md) → List of all available services, APIs, UIs, and monitoring endpoints
+- 👉 [Benchmark](docs/benchmark.md) → Lightweight k6-based protocol and template for PostgreSQL vs MongoDB comparative results
 
 ---
 
@@ -130,4 +131,3 @@ All generated content has been reviewed and refined to ensure correctness, clari
 This project is licensed under the [MIT License](LICENSE).
 
 ---
-

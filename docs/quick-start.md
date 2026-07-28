@@ -14,7 +14,7 @@ Install Docker Desktop (includes Docker Compose):
 
 ## ⚙️ Credentials
 
-Credentials are defined in `.env` at the project root and injected into `compose.yaml` via `${VAR}` references (no inline defaults — if `.env` is missing, Compose fails explicitly).
+Credentials are defined in `.env` at the project root and injected into Compose files via `${VAR}` references (no inline defaults — if `.env` is missing, Compose fails explicitly).
 
 > **⚠️ Demo/thesis note** — `.env` is committed here intentionally to make the demo self-contained. In a production project `.env` must be git-ignored and secrets injected via CI/CD or a secrets manager.
 
@@ -69,6 +69,18 @@ docker compose -f compose.base.yaml --profile test-newman run --rm newman
 or use the run-tests.sh or run-tests.ps1 script.
 
 See [Startup scripts section](#startup-scripts) above for details.
+
+---
+
+## ⚡ Run lightweight benchmark (k6)
+
+After startup (and optionally after `run-tests.*` data seeding), run:
+
+```bash
+docker run --rm -i -e BASE_URL=http://host.docker.internal:8080 -e VUS=5 -e DURATION=30s -v "$(pwd):/work" -w /work grafana/k6 run benchmark/k6/read-api-baseline.js
+```
+
+For the full methodology and comparison table template, see [Benchmark](benchmark.md).
 
 ---
 
