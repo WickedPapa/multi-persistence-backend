@@ -9,15 +9,15 @@ services:
           - postgres
     restart: always
     environment:
-      POSTGRES_USER: postgres-admin
-      POSTGRES_PASSWORD: postgres-psw
-      POSTGRES_DB: multi_persistence_backend_postgres_db
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U postgres-admin" ]
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER}" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -27,8 +27,8 @@ services:
     container_name: pgadmin
     restart: always
     environment:
-      PGADMIN_DEFAULT_EMAIL: pg@admin.com
-      PGADMIN_DEFAULT_PASSWORD: pg-psw
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
     ports:
       - "5050:80"
     depends_on:
@@ -46,8 +46,8 @@ services:
     ports:
       - "27017:27017"
     environment:
-      MONGO_INITDB_ROOT_USERNAME: mongo-admin
-      MONGO_INITDB_ROOT_PASSWORD: mongo-psw
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
     volumes:
       - mongo_data:/data/db
     healthcheck:
@@ -64,10 +64,10 @@ services:
       - "8081:8081"
     environment:
       ME_CONFIG_MONGODB_SERVER: mongo
-      ME_CONFIG_MONGODB_ADMINUSERNAME: mongo-admin
-      ME_CONFIG_MONGODB_ADMINPASSWORD: mongo-psw
-      ME_CONFIG_BASICAUTH_USERNAME: admin-basic
-      ME_CONFIG_BASICAUTH_PASSWORD: psw-basic
+      ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGO_ROOT_USERNAME}
+      ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_ROOT_PASSWORD}
+      ME_CONFIG_BASICAUTH_USERNAME: ${MONGO_EXPRESS_USER}
+      ME_CONFIG_BASICAUTH_PASSWORD: ${MONGO_EXPRESS_PASSWORD}
     depends_on:
       mongo:
         condition: service_healthy
@@ -80,7 +80,7 @@ services:
       - "8080:8080"
     environment:
       SPRING_PROFILES_ACTIVE: docker
-      APP_DATASOURCE: ${APP_DATASOURCE:-postgres}
+      APP_DATASOURCE: ${APP_DATASOURCE}
       TZ: Europe/Rome
     depends_on:
       postgres:

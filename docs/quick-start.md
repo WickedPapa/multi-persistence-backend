@@ -12,6 +12,14 @@ Install Docker Desktop (includes Docker Compose):
 
 ---
 
+## ⚙️ Credentials
+
+Credentials are defined in `.env` at the project root and injected into `compose.yaml` via `${VAR}` references (no inline defaults — if `.env` is missing, Compose fails explicitly).
+
+> **⚠️ Demo/thesis note** — `.env` is committed here intentionally to make the demo self-contained. In a production project `.env` must be git-ignored and secrets injected via CI/CD or a secrets manager.
+
+---
+
 ## ▶️ How to run the application
 
 To start the application, open a terminal in the **root of the project** and run **one of the following commands**, choosing based on:
