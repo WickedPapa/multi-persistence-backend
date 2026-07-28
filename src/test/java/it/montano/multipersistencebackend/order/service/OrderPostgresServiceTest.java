@@ -89,6 +89,25 @@ class OrderPostgresServiceTest {
   }
 
   @Test
+  void shouldDeleteOrderNoCache(@Given UUID orderId, @Given UUID userId, @Given OrderEntity order) {
+    UserEntity user = new UserEntity();
+    user.setId(userId);
+    order.setUser(user);
+
+    when(repo.findById(orderId)).thenReturn(Optional.of(order));
+    when(cacheManager.getCache("orders")).thenReturn(null);
+    when(cacheManager.getCache("orders-by-user")).thenReturn(null);
+    doNothing().when(repo).deleteById(orderId);
+
+    service.deleteOrder(orderId);
+
+    verify(repo).findById(orderId);
+    verify(repo).deleteById(orderId);
+    verify(ordersCache, never()).evict(orderId);
+    verify(ordersByUserCache, never()).evict(userId);
+  }
+
+  @Test
   void shouldDeleteOrder(@Given UUID orderId, @Given UUID userId, @Given OrderEntity order) {
     UserEntity user = new UserEntity();
     user.setId(userId);

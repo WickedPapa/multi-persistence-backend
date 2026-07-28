@@ -56,7 +56,7 @@ Keep hardware and background workload as stable as possible while measuring.
 
 ---
 
-## Results template
+## Results
 
 Measured with the lightweight profile (`VUS=5`, `DURATION=30s`).
 
