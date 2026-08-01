@@ -1,5 +1,7 @@
 package it.montano.multipersistencebackend.order.repository;
 
+import it.montano.multipersistencebackend.common.annotation.ConditionalOnDatasource;
+import it.montano.multipersistencebackend.common.constant.Datasources;
 import it.montano.multipersistencebackend.dto.MostSoldProductResponse;
 import it.montano.multipersistencebackend.dto.TotalSpentPerUserResponse;
 import it.montano.multipersistencebackend.order.model.OrderEntity;
@@ -11,6 +13,7 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+@ConditionalOnDatasource(Datasources.POSTGRES)
 public interface OrderPostgresRepository extends JpaRepository<OrderEntity, UUID> {
 
   @EntityGraph(attributePaths = {"user", "items"})

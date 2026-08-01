@@ -1,5 +1,7 @@
 package it.montano.multipersistencebackend.order.repository;
 
+import it.montano.multipersistencebackend.common.annotation.ConditionalOnDatasource;
+import it.montano.multipersistencebackend.common.constant.Datasources;
 import it.montano.multipersistencebackend.dto.MostSoldProductResponse;
 import it.montano.multipersistencebackend.dto.TotalSpentPerUserResponse;
 import it.montano.multipersistencebackend.order.model.OrderDocument;
@@ -9,6 +11,7 @@ import lombok.NonNull;
 import org.springframework.data.mongodb.repository.Aggregation;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
+@ConditionalOnDatasource(Datasources.MONGO)
 public interface OrderMongoRepository extends MongoRepository<OrderDocument, UUID> {
   @NonNull
   List<OrderDocument> findByUserUserId(@NonNull UUID userId);
