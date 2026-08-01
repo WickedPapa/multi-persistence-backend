@@ -60,6 +60,10 @@ Keep hardware and background workload as stable as possible while measuring.
 
 Measured with the lightweight profile (`VUS=5`, `DURATION=30s`).
 
+---
+
+### With Cache
+
 | Backend | VUS | Duration | req/s (avg) | p95 latency (ms) | error rate (%) | Notes |
 |---|---:|---|---:|---:|---:|---|
 | PostgreSQL | 5 | 30s | 29.13 | 5.89 | 0.00 | Slightly lower p95 and avg latency in this run |
@@ -71,6 +75,22 @@ Additional observed metrics from the same run:
 |---|---:|---:|---:|---:|
 | PostgreSQL | 3.81 | 5.32 | 12.14 | 150 |
 | MongoDB | 4.00 | 5.32 | 14.80 | 150 |
+
+---
+
+### Without Cache
+
+| Backend | VUS | Duration | req/s (avg) | p95 latency (ms) | error rate (%) | Notes |
+|---|---:|---|---:|---:|---:|---|
+| PostgreSQL | 5 | 30s | 31.90 | 8.81 | 0.00 | No cache run (`spring.cache.type=none`) |
+| MongoDB | 5 | 30s | 31.94 | 9.01 | 0.00 | No cache run (`spring.cache.type=none`) |
+
+Additional observed metrics from the same run:
+
+| Backend | avg latency (ms) | p90 latency (ms) | max latency (ms) | iterations |
+|---|---:|---:|---:|---:|
+| PostgreSQL | 4.62 | 7.27 | 13.47 | 150 |
+| MongoDB | 4.57 | 7.32 | 13.85 | 150 |
 
 ---
 

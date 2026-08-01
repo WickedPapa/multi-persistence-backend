@@ -12,6 +12,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
@@ -36,6 +37,11 @@ import org.springframework.util.StringUtils;
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @RequiredArgsConstructor
+@ConditionalOnProperty(
+    prefix = "spring.cache",
+    name = "type",
+    havingValue = "caffeine",
+    matchIfMissing = true)
 public class CacheLoggingAspect {
 
   private final CacheManager cacheManager;

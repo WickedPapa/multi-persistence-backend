@@ -6,6 +6,8 @@ spring:
     url: jdbc:postgresql://localhost:5432/multi_persistence_backend_postgres_db
     username: ${POSTGRES_USER}
     password: ${POSTGRES_PASSWORD}
+  cache:
+    type: none #choose the cache type (caffeine|none)
 
   jpa:
     hibernate:
