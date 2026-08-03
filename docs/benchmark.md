@@ -90,8 +90,8 @@ For stress-campaign runs, seed data was executed with `run-tests-20x.*` before m
 
 | Cache | Backend | Load profile | Max VUs | Duration | iterations | req/s (avg) | p90 latency (ms) | p95 latency (ms) | p99 latency (ms) | avg latency (ms) | max latency (ms) | error rate (%) | failed reqs |
 |---|---|---|---:|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| With Cache | PostgreSQL | constant-arrival-rate (120 req/s) | 80 | 5m | 36001 | 127.88 | 2.52 | 2.84 | - | 1.93 | 66.75 | 0.00 | 0 |
-| With Cache | MongoDB | constant-arrival-rate (120 req/s) | 80 | 5m | 36000 | 127.87 | 2.94 | 3.29 | - | 2.26 | 44.54 | 0.00 | 0 |
+| With Cache | PostgreSQL | ramping-arrival-rate (120→300→600→900 req/s) | 156 | 8m | 176360 | 362.25 | 2.68 | 3.06 | 4.41 | 2.20 | 359.48 | 0.03 | 57 |
+| With Cache | MongoDB | ramping-arrival-rate (120→300→600→900 req/s) | 120 | 8m | 176399 | 379.00 | 2.93 | 3.27 | 4.27 | 2.24 | 121.15 | 0.01 | 27 |
 | Without Cache | PostgreSQL | ramping-arrival-rate (120→300→600→900 req/s) | 120 | 8m | 176399 | 392.65 | 2.74 | 3.08 | 4.00 | 1.94 | 21.29 | 0.01 | 34 |
 | Without Cache | MongoDB | ramping-arrival-rate (120→300→600→900 req/s) | 120 | 8m | 176399 | 392.09 | 2.90 | 3.26 | 4.31 | 2.36 | 357.54 | 0.01 | 25 |
 
