@@ -30,6 +30,15 @@ Traffic distribution in the default stress profile:
 - `GET /orders/stats/most-sold-products` -> 29%
 - `GET /orders/stats/total-spent-per-user` -> 29%
 
+Load model: `ramping-arrival-rate` with default stages:
+
+- 120 req/s for 2m
+- 300 req/s for 2m
+- 600 req/s for 2m
+- 900 req/s for 2m
+
+Global thresholds include both p95 and p99 latency.
+
 ---
 
 ## Prerequisites
@@ -37,8 +46,9 @@ Traffic distribution in the default stress profile:
 1. Start exactly one backend stack:
    - PostgreSQL: `./run-app-postgres.ps1` or `./run-app-postgres.sh`
    - MongoDB: `./run-app-mongo.ps1` or `./run-app-mongo.sh`
-2. (Optional but recommended) seed data with Newman; to better populate the database, run Newman tests 3 times:
-   - `./run-tests.ps1` or `./run-tests.sh`
+2. (Optional but recommended) seed data with Newman:
+   - quick seed: `./run-tests.ps1` or `./run-tests.sh`
+   - stress-campaign seed (recommended): `./run-tests-20x.ps1` or `./run-tests-20x.sh`
 3. Ensure API is reachable at `http://localhost:8080`.
 
 ---
@@ -47,6 +57,12 @@ Traffic distribution in the default stress profile:
 
 ```bash
 docker run --rm -i -e BASE_URL=http://host.docker.internal:8080 -v "$(pwd):/work" -w /work grafana/k6 run benchmark/k6/read-api-baseline.js
+```
+
+Optional stage override example:
+
+```bash
+docker run --rm -i -e BASE_URL=http://host.docker.internal:8080 -e STAGE_1_RATE=150 -e STAGE_2_RATE=350 -e STAGE_3_RATE=700 -e STAGE_4_RATE=1000 -e PREALLOCATED_VUS=120 -e MAX_VUS=500 -v "$(pwd):/work" -w /work grafana/k6 run benchmark/k6/read-api-baseline.js
 ```
 
 ---
@@ -58,7 +74,7 @@ Use the same protocol on both backends:
 1. Reset volumes (`run-compose-down.*`) and start the selected stack.
 2. Seed data with the same Newman collection.
 3. Run one warm-up execution (discard result).
-4. Run 3 measured executions with the same `RATE`, `DURATION`, `PREALLOCATED_VUS`, and `MAX_VUS`.
+4. Run 3 measured executions with the same stage configuration (`STAGE_1_RATE`, `STAGE_2_RATE`, `STAGE_3_RATE`, `STAGE_4_RATE`, stage durations, `PREALLOCATED_VUS`, and `MAX_VUS`).
 5. Compare median of p95 latency and request rate.
 
 Keep hardware and background workload as stable as possible while measuring.
@@ -68,16 +84,16 @@ Keep hardware and background workload as stable as possible while measuring.
 ## Results
 
 Measured with the configured benchmark profile for the campaign.  
-For the results reported below, database seeding was performed by running the Newman test suite 3 times before measurements.
+For stress-campaign runs, seed data was executed with `run-tests-20x.*` before measurements.
 
 ---
 
-| Cache | Backend | VUS | Duration | iterations | req/s (avg) | p90 latency (ms) | p95 latency (ms) | avg latency (ms) | max latency (ms) | error rate (%) |
-|---|---|---:|---|---:|---:|---:|---:|---:|---:|---:|
-| With Cache | PostgreSQL | 80 | 5m | 36001 | 127.88 | 2.52 | 2.84 | 1.93 | 66.75 | 0.00 |
-| With Cache | MongoDB | 80 | 5m | 36000 | 127.87 | 2.94 | 3.29 | 2.26 | 44.54 | 0.00 |
-| Without Cache | PostgreSQL | 80 | 5m | 36001 | 127.97 | 2.64 | 2.93 | 2.02 | 65.89 | 0.00 |
-| Without Cache | MongoDB | 80 | 5m | 36001 | 127.94 | 2.96 | 3.29 | 2.28 | 56.88 | 0.00 |
+| Cache | Backend | Load profile | Max VUs | Duration | iterations | req/s (avg) | p90 latency (ms) | p95 latency (ms) | p99 latency (ms) | avg latency (ms) | max latency (ms) | error rate (%) | failed reqs |
+|---|---|---|---:|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| With Cache | PostgreSQL | constant-arrival-rate (120 req/s) | 80 | 5m | 36001 | 127.88 | 2.52 | 2.84 | - | 1.93 | 66.75 | 0.00 | 0 |
+| With Cache | MongoDB | constant-arrival-rate (120 req/s) | 80 | 5m | 36000 | 127.87 | 2.94 | 3.29 | - | 2.26 | 44.54 | 0.00 | 0 |
+| Without Cache | PostgreSQL | ramping-arrival-rate (120→300→600→900 req/s) | 120 | 8m | 176399 | 392.65 | 2.74 | 3.08 | 4.00 | 1.94 | 21.29 | 0.01 | 34 |
+| Without Cache | MongoDB | ramping-arrival-rate (120→300→600→900 req/s) | 120 | 8m | 176399 | 392.09 | 2.90 | 3.26 | 4.31 | 2.36 | 357.54 | 0.01 | 25 |
 
 ---
 

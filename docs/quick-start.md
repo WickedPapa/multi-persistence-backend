@@ -66,7 +66,12 @@ You can run all API tests (including minimal automatic data setup) using Newman 
 docker compose -f compose.base.yaml --profile test-newman run --rm newman
 ```
 
-or use the run-tests.sh or run-tests.ps1 script.
+or use `run-tests.sh` / `run-tests.ps1`.
+
+For heavier benchmark seeding, run the x20 scripts:
+
+- `./run-tests-20x.sh`
+- `./run-tests-20x.ps1`
 
 See [Startup scripts section](#startup-scripts) above for details.
 
@@ -74,10 +79,10 @@ See [Startup scripts section](#startup-scripts) above for details.
 
 ## ⚡ Run lightweight benchmark (k6)
 
-After startup (and optionally after `run-tests.*` data seeding), run:
+After startup (and optionally after `run-tests-20x.*` data seeding for stress campaigns), run:
 
 ```bash
-docker run --rm -i -e BASE_URL=http://host.docker.internal:8080 -e VUS=5 -e DURATION=30s -v "$(pwd):/work" -w /work grafana/k6 run benchmark/k6/read-api-baseline.js
+docker run --rm -i -e BASE_URL=http://host.docker.internal:8080 -v "$(pwd):/work" -w /work grafana/k6 run benchmark/k6/read-api-baseline.js
 ```
 
 For the full methodology and comparison table template, see [Benchmark](benchmark.md).

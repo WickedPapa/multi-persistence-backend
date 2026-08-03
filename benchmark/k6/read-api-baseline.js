@@ -45,17 +45,33 @@ export function setup() {
 export const options = {
   scenarios: {
     read_stress: {
-      executor: "constant-arrival-rate",
-      rate: Number(__ENV.RATE || 120),
+      executor: "ramping-arrival-rate",
       timeUnit: "1s",
-      duration: __ENV.DURATION || "5m",
-      preAllocatedVUs: Number(__ENV.PREALLOCATED_VUS || 80),
-      maxVUs: Number(__ENV.MAX_VUS || 300),
+      preAllocatedVUs: Number(__ENV.PREALLOCATED_VUS || 120),
+      maxVUs: Number(__ENV.MAX_VUS || 500),
+      stages: [
+        {
+          target: Number(__ENV.STAGE_1_RATE || 120),
+          duration: __ENV.STAGE_1_DURATION || "2m",
+        },
+        {
+          target: Number(__ENV.STAGE_2_RATE || 300),
+          duration: __ENV.STAGE_2_DURATION || "2m",
+        },
+        {
+          target: Number(__ENV.STAGE_3_RATE || 600),
+          duration: __ENV.STAGE_3_DURATION || "2m",
+        },
+        {
+          target: Number(__ENV.STAGE_4_RATE || 900),
+          duration: __ENV.STAGE_4_DURATION || "2m",
+        },
+      ],
     },
   },
   thresholds: {
     http_req_failed: ["rate<0.02"],
-    http_req_duration: ["p(95)<1500"],
+    http_req_duration: ["p(95)<1500", "p(99)<2500"],
     "http_req_duration{endpoint:users}": ["p(95)<1200"],
     "http_req_duration{endpoint:products}": ["p(95)<1200"],
     "http_req_duration{endpoint:orders}": ["p(95)<1400"],
