@@ -72,35 +72,12 @@ For the results reported below, database seeding was performed by running the Ne
 
 ---
 
-### With Cache
-
-| Backend | VUS | Duration | req/s (avg) | p95 latency (ms) | error rate (%) |
-|---|---:|---|---:|---:|---:|
-| PostgreSQL | 80 | 5m | 127.88 | 2.84 | 0.00 |
-| MongoDB | 80 | 5m | 127.87 | 3.29 | 0.00 |
-
-Additional observed metrics from the same run:
-
-| Backend | avg latency (ms) | p90 latency (ms) | max latency (ms) | iterations |
-|---|---:|---:|---:|---:|
-| PostgreSQL | 1.93 | 2.52 | 66.75 | 36001 |
-| MongoDB | 2.26 | 2.94 | 44.54 | 36000 |
-
----
-
-### Without Cache
-
-| Backend | VUS | Duration | req/s (avg) | p95 latency (ms) | error rate (%) |
-|---|---:|---|---:|---:|---:|
-| PostgreSQL | 80 | 5m | 127.97 | 2.93 | 0.00 |
-| MongoDB | 80 | 5m | 127.94 | 3.29 | 0.00 |
-
-Additional observed metrics from the same run:
-
-| Backend | avg latency (ms) | p90 latency (ms) | max latency (ms) | iterations |
-|---|---:|---:|---:|---:|
-| PostgreSQL | 2.02 | 2.64 | 65.89 | 36001 |
-| MongoDB | 2.28 | 2.96 | 56.88 | 36001 |
+| Cache | Backend | VUS | Duration | iterations | req/s (avg) | p90 latency (ms) | p95 latency (ms) | avg latency (ms) | max latency (ms) | error rate (%) |
+|---|---|---:|---|---:|---:|---:|---:|---:|---:|---:|
+| With Cache | PostgreSQL | 80 | 5m | 36001 | 127.88 | 2.52 | 2.84 | 1.93 | 66.75 | 0.00 |
+| With Cache | MongoDB | 80 | 5m | 36000 | 127.87 | 2.94 | 3.29 | 2.26 | 44.54 | 0.00 |
+| Without Cache | PostgreSQL | 80 | 5m | 36001 | 127.97 | 2.64 | 2.93 | 2.02 | 65.89 | 0.00 |
+| Without Cache | MongoDB | 80 | 5m | 36001 | 127.94 | 2.96 | 3.29 | 2.28 | 56.88 | 0.00 |
 
 ---
 
