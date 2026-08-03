@@ -76,14 +76,14 @@ For the results reported below, database seeding was performed by running the Ne
 
 | Backend | VUS | Duration | req/s (avg) | p95 latency (ms) | error rate (%) |
 |---|---:|---|---:|---:|---:|
-| PostgreSQL | 5 | 30s | 29.13 | 5.89 | 0.00 |
+| PostgreSQL | 80 | 5m | 127.88 | 2.84 | 0.00 |
 | MongoDB | 5 | 30s | 29.11 | 6.64 | 0.00 |
 
 Additional observed metrics from the same run:
 
 | Backend | avg latency (ms) | p90 latency (ms) | max latency (ms) | iterations |
 |---|---:|---:|---:|---:|
-| PostgreSQL | 3.81 | 5.32 | 12.14 | 150 |
+| PostgreSQL | 1.93 | 2.52 | 66.75 | 36001 |
 | MongoDB | 4.00 | 5.32 | 14.80 | 150 |
 
 ---
