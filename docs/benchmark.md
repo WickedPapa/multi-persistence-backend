@@ -93,14 +93,14 @@ Additional observed metrics from the same run:
 | Backend | VUS | Duration | req/s (avg) | p95 latency (ms) | error rate (%) |
 |---|---:|---|---:|---:|---:|
 | PostgreSQL | 80 | 5m | 127.97 | 2.93 | 0.00 |
-| MongoDB | 5 | 30s | 31.94 | 9.01 | 0.00 |
+| MongoDB | 80 | 5m | 127.94 | 3.29 | 0.00 |
 
 Additional observed metrics from the same run:
 
 | Backend | avg latency (ms) | p90 latency (ms) | max latency (ms) | iterations |
 |---|---:|---:|---:|---:|
 | PostgreSQL | 2.02 | 2.64 | 65.89 | 36001 |
-| MongoDB | 4.57 | 7.32 | 13.85 | 150 |
+| MongoDB | 2.28 | 2.96 | 56.88 | 36001 |
 
 ---
 
