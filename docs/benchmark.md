@@ -12,14 +12,23 @@ Current benchmark script:
 
 - `benchmark/k6/read-api-baseline.js`
 
-It runs only read-oriented endpoints (plus health) to keep execution simple and stable:
+It runs only read-oriented endpoints to keep the SQL-vs-NoSQL comparison focused on query behavior:
 
-- `GET /actuator/health`
 - `GET /users`
 - `GET /products`
 - `GET /orders`
 - `GET /orders/stats/most-sold-products`
 - `GET /orders/stats/total-spent-per-user`
+
+`GET /actuator/health` is executed once in `setup()` only as a pre-flight availability check and is excluded from load traffic.
+
+Traffic distribution in the default stress profile:
+
+- `GET /users` -> 14%
+- `GET /products` -> 14%
+- `GET /orders` -> 14%
+- `GET /orders/stats/most-sold-products` -> 29%
+- `GET /orders/stats/total-spent-per-user` -> 29%
 
 ---
 
@@ -28,16 +37,16 @@ It runs only read-oriented endpoints (plus health) to keep execution simple and 
 1. Start exactly one backend stack:
    - PostgreSQL: `./run-app-postgres.ps1` or `./run-app-postgres.sh`
    - MongoDB: `./run-app-mongo.ps1` or `./run-app-mongo.sh`
-2. (Optional but recommended) seed data with Newman:
+2. (Optional but recommended) seed data with Newman; to better populate the database, run Newman tests 3 times:
    - `./run-tests.ps1` or `./run-tests.sh`
 3. Ensure API is reachable at `http://localhost:8080`.
 
 ---
 
-## Run k6 (light profile)
+## Run k6 (stress profile)
 
 ```bash
-docker run --rm -i -e BASE_URL=http://host.docker.internal:8080 -e VUS=5 -e DURATION=30s -v "$(pwd):/work" -w /work grafana/k6 run benchmark/k6/read-api-baseline.js
+docker run --rm -i -e BASE_URL=http://host.docker.internal:8080 -v "$(pwd):/work" -w /work grafana/k6 run benchmark/k6/read-api-baseline.js
 ```
 
 ---
@@ -49,7 +58,7 @@ Use the same protocol on both backends:
 1. Reset volumes (`run-compose-down.*`) and start the selected stack.
 2. Seed data with the same Newman collection.
 3. Run one warm-up execution (discard result).
-4. Run 3 measured executions with the same `VUS` and `DURATION`.
+4. Run 3 measured executions with the same `RATE`, `DURATION`, `PREALLOCATED_VUS`, and `MAX_VUS`.
 5. Compare median of p95 latency and request rate.
 
 Keep hardware and background workload as stable as possible while measuring.
@@ -58,7 +67,8 @@ Keep hardware and background workload as stable as possible while measuring.
 
 ## Results
 
-Measured with the lightweight profile (`VUS=5`, `DURATION=30s`).
+Measured with the configured benchmark profile for the campaign.  
+For the results reported below, database seeding was performed by running the Newman test suite 3 times before measurements.
 
 ---
 
@@ -82,14 +92,14 @@ Additional observed metrics from the same run:
 
 | Backend | VUS | Duration | req/s (avg) | p95 latency (ms) | error rate (%) |
 |---|---:|---|---:|---:|---:|
-| PostgreSQL | 5 | 30s | 31.90 | 8.81 | 0.00 |
+| PostgreSQL | 80 | 5m | 127.97 | 2.93 | 0.00 |
 | MongoDB | 5 | 30s | 31.94 | 9.01 | 0.00 |
 
 Additional observed metrics from the same run:
 
 | Backend | avg latency (ms) | p90 latency (ms) | max latency (ms) | iterations |
 |---|---:|---:|---:|---:|
-| PostgreSQL | 4.62 | 7.27 | 13.47 | 150 |
+| PostgreSQL | 2.02 | 2.64 | 65.89 | 36001 |
 | MongoDB | 4.57 | 7.32 | 13.85 | 150 |
 
 ---
